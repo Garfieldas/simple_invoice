@@ -3,3 +3,5 @@ django-redis>=5.4
 django-select2>=8.4
 psycopg2-binary>=2.9
 python-dotenv>=1.0
+django-tailwind>=4.0
+django-tailwind[reload]>=4.0
