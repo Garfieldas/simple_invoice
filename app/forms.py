@@ -6,6 +6,7 @@ from django.contrib.auth.forms import (
     SetPasswordForm,
 )
 from django.forms import inlineformset_factory
+from django_select2.forms import Select2Widget
 
 from app.models import Client, Invoice, InvoiceItem, UserCompany, UserProfile
 
@@ -160,7 +161,7 @@ class ClientForm(forms.ModelForm):
             'email', 'phone_number', 'address', 'city',
         )
         widgets = {
-            'client_type': forms.Select(attrs={'class': TAILWIND_INPUT_CLASS}),
+            'client_type': Select2Widget(attrs={'class': TAILWIND_INPUT_CLASS}),
             'name': forms.TextInput(attrs={'class': TAILWIND_INPUT_CLASS}),
             'company_code': forms.TextInput(attrs={'class': TAILWIND_INPUT_CLASS}),
             'vat_code': forms.TextInput(attrs={'class': TAILWIND_INPUT_CLASS}),
@@ -219,10 +220,10 @@ class InvoiceForm(forms.ModelForm):
             'issue_date', 'due_date', 'tax_enabled', 'tax_rate', 'notes',
         )
         widgets = {
-            'client': forms.Select(attrs={'class': TAILWIND_INPUT_CLASS}),
+            'client': Select2Widget(attrs={'class': TAILWIND_INPUT_CLASS}),
             'series': forms.TextInput(attrs={'class': TAILWIND_INPUT_CLASS}),
             'number': forms.NumberInput(attrs={'class': TAILWIND_INPUT_CLASS}),
-            'status': forms.Select(attrs={'class': TAILWIND_INPUT_CLASS}),
+            'status': Select2Widget(attrs={'class': TAILWIND_INPUT_CLASS}),
             'issue_date': forms.DateInput(
                 attrs={'class': TAILWIND_INPUT_CLASS, 'type': 'date'},
             ),
@@ -230,7 +231,7 @@ class InvoiceForm(forms.ModelForm):
                 attrs={'class': TAILWIND_INPUT_CLASS, 'type': 'date'},
             ),
             'tax_enabled': forms.CheckboxInput(attrs={'class': TAILWIND_INPUT_CLASS}),
-            'tax_rate': forms.Select(attrs={'class': TAILWIND_INPUT_CLASS}),
+            'tax_rate': Select2Widget(attrs={'class': TAILWIND_INPUT_CLASS}),
             'notes': forms.Textarea(
                 attrs={'class': TAILWIND_INPUT_CLASS, 'rows': 3},
             ),

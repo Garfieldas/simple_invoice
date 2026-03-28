@@ -7,7 +7,46 @@
     <title>{% block title %}Invoice App{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <link rel="stylesheet" href="{% static 'css/sweet_alert_min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/select2_min.css' %}">
     {% tailwind_css %}
+    <style>
+        .select2-container { width: 100% !important; }
+        .select2-container--default .select2-selection--single {
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            padding: 0.375rem 0.75rem;
+            height: auto;
+            min-height: 2.5rem;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 1.5;
+            padding-left: 0;
+            color: #111827;
+            font-size: 0.875rem;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 100%;
+        }
+        .select2-container--default.select2-container--focus .select2-selection--single,
+        .select2-container--default.select2-container--open .select2-selection--single {
+            border-color: #ef4444;
+            box-shadow: 0 0 0 1px #ef4444;
+            outline: none;
+        }
+        .select2-dropdown { border-color: #d1d5db; border-radius: 0.5rem; }
+        .select2-results__option--highlighted[aria-selected] {
+            background-color: #ef4444 !important;
+        }
+        .select2-field-wrapper { display: flex; align-items: center; gap: 0.5rem; }
+        .select2-field-wrapper .select2-container { flex: 1; }
+        .add-new-link {
+            display: inline-flex; align-items: center; white-space: nowrap;
+            font-size: 0.75rem; font-weight: 500; color: #ef4444;
+            padding: 0.375rem 0.5rem; border: 1px solid #fca5a5;
+            border-radius: 0.5rem; text-decoration: none;
+        }
+        .add-new-link:hover { background-color: #fef2f2; }
+    </style>
 </head>
 <body class="bg-gray-50 text-gray-900 antialiased" x-data="{ sidebarOpen: false }" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
     <div class="min-h-screen flex">
@@ -34,7 +73,18 @@
     <script src="{% static 'js/alpine_min.js' %}"></script>
     <script src="{% static 'js/htmx_min.js' %}"></script>
     <script src="{% static 'js/sweet_alert_min.js' %}"></script>
+    <script src="{% static 'js/jquery_min.js' %}"></script>
+    <script src="{% static 'js/select2_min.js' %}"></script>
     {% include 'site-scripts.html' %}
+    <script>
+    function initSelect2() {
+        document.querySelectorAll('select.django-select2:not(.select2-hidden-accessible)').forEach(function(el) {
+            $(el).select2({ width: '100%' });
+        });
+    }
+    document.addEventListener('DOMContentLoaded', initSelect2);
+    document.body.addEventListener('htmx:afterSwap', initSelect2);
+    </script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>

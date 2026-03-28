@@ -1,7 +1,7 @@
 {% include 'partials/page_header.html' with page_title=title page_subtitle="Fill in the company details" %}
 
 <div class="px-4 sm:px-6 lg:px-8">
-<div class="max-w-2xl">
+<div class="max-w-2xl mx-auto">
     <form method="post" class="space-y-6 bg-white shadow-sm rounded-lg border border-gray-200 p-6">
         {% csrf_token %}
         {% for field in form %}
