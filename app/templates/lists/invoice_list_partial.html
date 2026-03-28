@@ -1,8 +1,20 @@
 {% include 'partials/page_header.html' with page_title="Invoices" page_subtitle="Manage your invoices" %}
 
-{% include 'partials/messages.html' %}
-
 <div class="px-4 sm:px-6 lg:px-8">
+<div class="mb-4 flex items-center justify-between">
+    <div></div>
+    <a href="{% url 'invoice_create' %}"
+       hx-get="{% url 'invoice_create' %}"
+       hx-target="#main-content"
+       hx-swap="innerHTML"
+       hx-push-url="true"
+       class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-lg hover:bg-red-700">
+        <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+        </svg>
+        New Invoice
+    </a>
+</div>
 <div id="list-container">
     <!-- Status filter -->
     <div class="mb-4 flex flex-wrap gap-2" x-data="{ currentStatus: '{{ current_status }}' }">
@@ -39,6 +51,7 @@
                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Issue Date</th>
                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Due Date</th>
                     <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
+                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
@@ -72,10 +85,24 @@
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right font-medium">
                         &euro;{{ invoice.total }}
                     </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+                        <a href="{% url 'invoice_edit' invoice.pk %}"
+                           hx-get="{% url 'invoice_edit' invoice.pk %}"
+                           hx-target="#main-content"
+                           hx-swap="innerHTML"
+                           hx-push-url="true"
+                           class="text-red-600 hover:text-red-900">Edit</a>
+                        <a href="{% url 'invoice_delete' invoice.pk %}"
+                           hx-get="{% url 'invoice_delete' invoice.pk %}"
+                           hx-target="#main-content"
+                           hx-swap="innerHTML"
+                           hx-push-url="true"
+                           class="text-gray-400 hover:text-red-600">Delete</a>
+                    </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="6" class="px-6 py-12 text-center">
+                    <td colspan="7" class="px-6 py-12 text-center">
                         <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                         </svg>
