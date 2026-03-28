@@ -12,7 +12,7 @@ class UserAdmin(BaseUserAdmin):
 
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'phone', 'email', 'bank_account', 'bank_name')
+    list_display = ('user', 'phone_number', 'user__email', 'bank_account', 'bank_name')
 
 
 @admin.register(UserCompany)
@@ -36,7 +36,7 @@ class InvoiceItemInline(admin.TabularInline):
 @admin.register(Invoice)
 class InvoiceAdmin(admin.ModelAdmin):
     list_display = ('invoice_number', 'client', 'status', 'issue_date', 'due_date', 'tax_enabled', 'tax_rate')
-    list_filter = ('status', 'tax_enabled', 'currency')
+    list_filter = ('status', 'tax_enabled')
     search_fields = ('series', 'number', 'client__name')
     inlines = [InvoiceItemInline]
 

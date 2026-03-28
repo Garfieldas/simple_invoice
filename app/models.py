@@ -42,8 +42,7 @@ class User(AbstractUser):
 class UserProfile(models.Model):
     """Basic contact and payment details for the invoice sender."""
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-    phone = models.CharField(max_length=50, blank=True)
-    address = models.TextField(blank=True)
+    phone_number = models.CharField(max_length=50, blank=True)
     address = models.CharField(max_length=200, blank=True)
     city = models.CharField(max_length=200, blank=True)
     personal_code = models.CharField(max_length=50, blank=True)
@@ -89,7 +88,7 @@ class Client(models.Model):
     company_code = models.CharField(max_length=50, blank=True)
     vat_code = models.CharField(max_length=50, blank=True)
     email = models.EmailField(blank=True)
-    phone = models.CharField(max_length=50, blank=True)
+    phone_number = models.CharField(max_length=50, blank=True)
     address = models.TextField(blank=True)
     city = models.CharField(max_length=100, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
