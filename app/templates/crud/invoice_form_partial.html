@@ -1,7 +1,8 @@
+{% load i18n %}
 {% include 'partials/page_header.html' with page_title=title page_subtitle="Fill in the invoice details" %}
 
 <div class="px-4 sm:px-6 lg:px-8">
-<div class="max-w-4xl">
+<div class="max-w-4xl mx-auto">
     <form method="post" class="space-y-8">
         {% csrf_token %}
 
@@ -11,7 +12,17 @@
             {% for field in form %}
             <div>
                 <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">{{ field.label }}</label>
+                {% if field.name == 'client' %}
+                <div class="select2-field-wrapper">
+                    {{ field }}
+                    <a href="{% url 'client_create' %}" target="_blank" class="add-new-link" title="{% trans 'Create new client in a new tab' %}">
+                        <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        {% trans "New" %}
+                    </a>
+                </div>
+                {% else %}
                 {{ field }}
+                {% endif %}
                 {% if field.errors %}
                 <p class="mt-1 text-sm text-red-600">{{ field.errors.0 }}</p>
                 {% endif %}

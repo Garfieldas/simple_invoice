@@ -690,3 +690,60 @@ class SwapTargetTests(ViewTestMixin, TestCase):
         content = response.content.decode()
         self.assertIn('hx-confirm=', content)
         self.assertIn('hx-post=', content)
+
+
+class FormCenteringTests(ViewTestMixin, TestCase):
+    """Form containers are horizontally centered with mx-auto."""
+
+    def test_client_form_centered(self):
+        response = self.client.get(reverse('client_create'))
+        self.assertContains(response, 'max-w-2xl mx-auto')
+
+    def test_company_form_centered(self):
+        response = self.client.get(reverse('company_create'))
+        self.assertContains(response, 'max-w-2xl mx-auto')
+
+    def test_profile_form_centered(self):
+        response = self.client.get(reverse('profile_edit'))
+        self.assertContains(response, 'max-w-2xl mx-auto')
+
+    def test_invoice_form_centered(self):
+        response = self.client.get(reverse('invoice_create'))
+        self.assertContains(response, 'max-w-4xl mx-auto')
+
+    def test_confirm_delete_centered(self):
+        response = self.client.get(
+            reverse('client_delete', args=[self.client_obj.pk])
+        )
+        self.assertContains(response, 'max-w-lg mx-auto')
+
+
+class Select2WidgetTests(ViewTestMixin, TestCase):
+    """Select fields use django-select2 widgets."""
+
+    def test_invoice_form_client_uses_select2(self):
+        response = self.client.get(reverse('invoice_create'))
+        self.assertContains(response, 'django-select2')
+
+    def test_invoice_form_status_uses_select2(self):
+        response = self.client.get(reverse('invoice_create'))
+        content = response.content.decode()
+        self.assertIn('django-select2', content)
+
+    def test_client_form_type_uses_select2(self):
+        response = self.client.get(reverse('client_create'))
+        self.assertContains(response, 'django-select2')
+
+    def test_invoice_form_has_add_new_client_link(self):
+        response = self.client.get(reverse('invoice_create'))
+        content = response.content.decode()
+        self.assertIn('target="_blank"', content)
+        self.assertIn(reverse('client_create'), content)
+        self.assertIn('add-new-link', content)
+
+    def test_base_template_includes_select2_assets(self):
+        response = self.client.get(reverse('invoice_create'))
+        content = response.content.decode()
+        self.assertIn('select2_min.css', content)
+        self.assertIn('select2_min.js', content)
+        self.assertIn('jquery_min.js', content)
