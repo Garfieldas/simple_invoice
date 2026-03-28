@@ -53,12 +53,11 @@
                            hx-swap="innerHTML"
                            hx-push-url="true"
                            class="text-red-600 hover:text-red-900">Edit</a>
-                        <a href="{% url 'company_delete' company.pk %}"
-                           hx-get="{% url 'company_delete' company.pk %}"
-                           hx-target="#main-content"
-                           hx-swap="innerHTML"
-                           hx-push-url="true"
-                           class="text-gray-400 hover:text-red-600">Delete</a>
+                        <button hx-post="{% url 'company_delete' company.pk %}"
+                                hx-target="closest tr"
+                                hx-swap="outerHTML swap:0.5s"
+                                hx-confirm="You are about to delete this company. This action cannot be undone."
+                                class="text-gray-400 hover:text-red-600">Delete</button>
                     </td>
                 </tr>
                 {% empty %}

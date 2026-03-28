@@ -15,7 +15,7 @@
         {% if page_obj.has_previous %}
         <a href="?page={{ page_obj.previous_page_number }}"
            hx-get="?page={{ page_obj.previous_page_number }}"
-           hx-target="#list-container"
+           hx-target="#main-content"
            hx-swap="innerHTML"
            hx-push-url="true"
            class="relative inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
@@ -33,7 +33,7 @@
                 {% elif num > page_obj.number|add:"-3" and num < page_obj.number|add:"3" %}
                 <a href="?page={{ num }}"
                    hx-get="?page={{ num }}"
-                   hx-target="#list-container"
+                   hx-target="#main-content"
                    hx-swap="innerHTML"
                    hx-push-url="true"
                    class="relative inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
@@ -46,7 +46,7 @@
         {% if page_obj.has_next %}
         <a href="?page={{ page_obj.next_page_number }}"
            hx-get="?page={{ page_obj.next_page_number }}"
-           hx-target="#list-container"
+           hx-target="#main-content"
            hx-swap="innerHTML"
            hx-push-url="true"
            class="relative inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50">

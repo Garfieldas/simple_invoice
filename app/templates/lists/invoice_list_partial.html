@@ -19,7 +19,7 @@
     <div class="mb-4 flex flex-wrap gap-2" x-data="{ currentStatus: '{{ current_status }}' }">
         <a href="{% url 'invoice_list' %}"
            hx-get="{% url 'invoice_list' %}"
-           hx-target="#list-container"
+           hx-target="#main-content"
            hx-swap="innerHTML"
            hx-push-url="true"
            :class="currentStatus === '' ? 'bg-red-600 text-white' : 'bg-white text-gray-700 ring-1 ring-inset ring-gray-300 hover:bg-gray-50'"
@@ -29,7 +29,7 @@
         {% for value, label in status_choices %}
         <a href="{% url 'invoice_list' %}?status={{ value }}"
            hx-get="{% url 'invoice_list' %}?status={{ value }}"
-           hx-target="#list-container"
+           hx-target="#main-content"
            hx-swap="innerHTML"
            hx-push-url="true"
            :class="currentStatus === '{{ value }}' ? 'bg-red-600 text-white' : 'bg-white text-gray-700 ring-1 ring-inset ring-gray-300 hover:bg-gray-50'"
@@ -91,12 +91,11 @@
                            hx-swap="innerHTML"
                            hx-push-url="true"
                            class="text-red-600 hover:text-red-900">Edit</a>
-                        <a href="{% url 'invoice_delete' invoice.pk %}"
-                           hx-get="{% url 'invoice_delete' invoice.pk %}"
-                           hx-target="#main-content"
-                           hx-swap="innerHTML"
-                           hx-push-url="true"
-                           class="text-gray-400 hover:text-red-600">Delete</a>
+                        <button hx-post="{% url 'invoice_delete' invoice.pk %}"
+                                hx-target="closest tr"
+                                hx-swap="outerHTML swap:0.5s"
+                                hx-confirm="You are about to delete this invoice. This action cannot be undone."
+                                class="text-gray-400 hover:text-red-600">Delete</button>
                     </td>
                 </tr>
                 {% empty %}

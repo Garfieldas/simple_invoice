@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="{% static 'css/sweet_alert_min.css' %}">
     {% tailwind_css %}
 </head>
-<body class="bg-gray-50 text-gray-900 antialiased" x-data="{ sidebarOpen: false }">
+<body class="bg-gray-50 text-gray-900 antialiased" x-data="{ sidebarOpen: false }" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
     <div class="min-h-screen flex">
         <!-- Sidebar -->
         {% include 'partials/sidebar.html' %}
