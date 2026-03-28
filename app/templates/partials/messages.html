@@ -32,7 +32,7 @@
                 </p>
             </div>
             <div class="ml-auto pl-3">
-                <button type="button" class="inline-flex rounded-md p-1.5 {% if message.tags == 'success' %}text-green-500 hover:bg-green-100{% elif message.tags == 'error' %}text-red-500 hover:bg-red-100{% elif message.tags == 'warning' %}text-yellow-500 hover:bg-yellow-100{% elif message.tags == 'info' %}text-blue-500 hover:bg-blue-100{% else %}text-gray-500 hover:bg-gray-100{% endif %} focus:outline-none" onclick="this.parentElement.parentElement.remove()">
+                <button type="button" class="inline-flex rounded-md p-1.5 {% if message.tags == 'success' %}text-green-500 hover:bg-green-100{% elif message.tags == 'error' %}text-red-500 hover:bg-red-100{% elif message.tags == 'warning' %}text-yellow-500 hover:bg-yellow-100{% elif message.tags == 'info' %}text-blue-500 hover:bg-blue-100{% else %}text-gray-500 hover:bg-gray-100{% endif %} focus:outline-none" @click="$el.closest('[role=alert]').remove()">
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
