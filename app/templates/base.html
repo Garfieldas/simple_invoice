@@ -1,0 +1,40 @@
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Invoice App{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sweet_alert_min.css' %}">
+    {% tailwind_css %}
+</head>
+<body class="bg-gray-50 text-gray-900 antialiased" x-data="{ sidebarOpen: false }">
+    <div class="min-h-screen flex">
+        <!-- Sidebar -->
+        {% include 'partials/sidebar.html' %}
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col min-w-0 lg:ml-64">
+            <!-- Header -->
+            {% include 'partials/header.html' %}
+
+            <!-- Page Content -->
+            <main class="flex-1">
+                <div class="py-6" id="main-content">
+                    {% block content %}{% endblock %}
+                </div>
+            </main>
+
+            <!-- Footer -->
+            {% include 'partials/footer.html' %}
+        </div>
+    </div>
+
+    <script src="{% static 'js/alpine_min.js' %}"></script>
+    <script src="{% static 'js/htmx_min.js' %}"></script>
+    <script src="{% static 'js/sweet_alert_min.js' %}"></script>
+    {% include 'site-scripts.html' %}
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
