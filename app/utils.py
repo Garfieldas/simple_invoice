@@ -27,8 +27,6 @@ def _number_to_words_lt(n):
             h = num // 100
             if h == 1:
                 parts.append('vienas šimtas')
-            elif h in (2, 9):
-                parts.append(f'{ones[h]} šimtai')
             else:
                 parts.append(f'{ones[h]} šimtai')
             num %= 100
