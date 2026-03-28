@@ -1,4 +1,5 @@
 from django.core.paginator import Paginator
+from django.db.models import Q
 from django.shortcuts import render
 
 from app.models import Client, Invoice, UserCompany
@@ -31,6 +32,14 @@ def invoice_list(request):
     if status:
         invoices = invoices.filter(status=status)
 
+    search = request.GET.get('search', '').strip()
+    if search:
+        invoices = invoices.filter(
+            Q(series__icontains=search)
+            | Q(client__name__icontains=search)
+            | Q(notes__icontains=search)
+        )
+
     paginator = Paginator(invoices, ITEMS_PER_PAGE)
     page_number = request.GET.get('page', 1)
     page_obj = paginator.get_page(page_number)
@@ -39,6 +48,7 @@ def invoice_list(request):
         'page_obj': page_obj,
         'status_choices': Invoice.INVOICE_STATUSES,
         'current_status': status or '',
+        'current_search': search,
     }
 
     if _is_htmx(request):
@@ -53,6 +63,16 @@ def client_list(request):
     if client_type:
         clients = clients.filter(client_type=client_type)
 
+    search = request.GET.get('search', '').strip()
+    if search:
+        clients = clients.filter(
+            Q(name__icontains=search)
+            | Q(email__icontains=search)
+            | Q(phone_number__icontains=search)
+            | Q(city__icontains=search)
+            | Q(company_code__icontains=search)
+        )
+
     paginator = Paginator(clients, ITEMS_PER_PAGE)
     page_number = request.GET.get('page', 1)
     page_obj = paginator.get_page(page_number)
@@ -61,6 +81,7 @@ def client_list(request):
         'page_obj': page_obj,
         'client_type_choices': Client.CLIENT_TYPES,
         'current_client_type': client_type or '',
+        'current_search': search,
     }
 
     if _is_htmx(request):

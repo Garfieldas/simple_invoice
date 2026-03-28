@@ -214,8 +214,10 @@ class HtmxNavigationTests(ViewTestMixin, TestCase):
         self.assertIn('hx-target="#main-content"', content)
         self.assertIn('hx-swap="innerHTML"', content)
         self.assertIn('hx-push-url="true"', content)
+
+
 from django.contrib.auth import get_user_model
-from django.test import Client, TestCase, override_settings
+from django.test import Client as DjangoTestClient, TestCase, override_settings
 from django.urls import reverse
 
 User = get_user_model()
@@ -228,7 +230,7 @@ User = get_user_model()
 )
 class LoginViewTests(TestCase):
     def setUp(self):
-        self.client = Client()
+        self.client = DjangoTestClient()
         self.user = User.objects.create_user(
             email='test@example.com', password='testpass123'
         )
@@ -266,7 +268,7 @@ class LoginViewTests(TestCase):
 )
 class RegisterViewTests(TestCase):
     def setUp(self):
-        self.client = Client()
+        self.client = DjangoTestClient()
 
     def test_register_page_renders(self):
         response = self.client.get(reverse('register'))
@@ -327,7 +329,7 @@ class RegisterViewTests(TestCase):
 )
 class LogoutViewTests(TestCase):
     def setUp(self):
-        self.client = Client()
+        self.client = DjangoTestClient()
         self.user = User.objects.create_user(
             email='test@example.com', password='testpass123'
         )
@@ -345,7 +347,7 @@ class LogoutViewTests(TestCase):
 )
 class PasswordResetViewTests(TestCase):
     def setUp(self):
-        self.client = Client()
+        self.client = DjangoTestClient()
 
     def test_password_reset_page_renders(self):
         response = self.client.get(reverse('password_reset'))
@@ -370,8 +372,109 @@ class PasswordResetViewTests(TestCase):
 )
 class DashboardAccessTests(TestCase):
     def setUp(self):
-        self.client = Client()
+        self.client = DjangoTestClient()
 
     def test_dashboard_requires_login(self):
         response = self.client.get(reverse('dashboard'))
         self.assertRedirects(response, f"{reverse('login')}?next={reverse('dashboard')}")
+
+
+class InvoiceSearchTests(ViewTestMixin, TestCase):
+
+    def test_search_by_client_name(self):
+        response = self.client.get(reverse('invoice_list'), {'search': 'Acme'})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'VF-000001')
+
+    def test_search_no_match(self):
+        response = self.client.get(reverse('invoice_list'), {'search': 'nonexistent'})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'No invoices')
+
+    def test_search_by_series(self):
+        response = self.client.get(reverse('invoice_list'), {'search': 'VF'})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'VF-000001')
+
+    def test_search_combined_with_status_filter(self):
+        response = self.client.get(
+            reverse('invoice_list'), {'search': 'Acme', 'status': 'draft'}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'VF-000001')
+
+    def test_search_combined_with_status_filter_no_match(self):
+        response = self.client.get(
+            reverse('invoice_list'), {'search': 'Acme', 'status': 'paid'}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'No invoices')
+
+    def test_search_htmx_returns_partial(self):
+        response = self.client.get(
+            reverse('invoice_list'), {'search': 'Acme'}, HTTP_HX_REQUEST='true'
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'lists/invoice_list_partial.html')
+
+    def test_search_context_has_current_search(self):
+        response = self.client.get(reverse('invoice_list'), {'search': 'Acme'})
+        self.assertEqual(response.context['current_search'], 'Acme')
+
+    def test_empty_search_returns_all(self):
+        response = self.client.get(reverse('invoice_list'), {'search': ''})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'VF-000001')
+
+
+class ClientSearchTests(ViewTestMixin, TestCase):
+
+    def test_search_by_name(self):
+        response = self.client.get(reverse('client_list'), {'search': 'Acme'})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Acme Corp')
+
+    def test_search_by_email(self):
+        response = self.client.get(reverse('client_list'), {'search': 'acme@example'})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Acme Corp')
+
+    def test_search_by_city(self):
+        response = self.client.get(reverse('client_list'), {'search': 'Vilnius'})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Acme Corp')
+
+    def test_search_no_match(self):
+        response = self.client.get(reverse('client_list'), {'search': 'nonexistent'})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'No clients')
+
+    def test_search_combined_with_type_filter(self):
+        response = self.client.get(
+            reverse('client_list'), {'search': 'Acme', 'client_type': 'business'}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Acme Corp')
+
+    def test_search_combined_with_type_filter_no_match(self):
+        response = self.client.get(
+            reverse('client_list'), {'search': 'Acme', 'client_type': 'individual'}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'No clients')
+
+    def test_search_htmx_returns_partial(self):
+        response = self.client.get(
+            reverse('client_list'), {'search': 'Acme'}, HTTP_HX_REQUEST='true'
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'lists/client_list_partial.html')
+
+    def test_search_context_has_current_search(self):
+        response = self.client.get(reverse('client_list'), {'search': 'Acme'})
+        self.assertEqual(response.context['current_search'], 'Acme')
+
+    def test_empty_search_returns_all(self):
+        response = self.client.get(reverse('client_list'), {'search': ''})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Acme Corp')
