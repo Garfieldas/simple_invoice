@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
-from .models import Client, CompanyProfile, Invoice, InvoiceItem, User, UserProfile
+from app.models import Client, UserCompany, Invoice, InvoiceItem, User, UserProfile
 
 
 @admin.register(User)
@@ -15,8 +15,8 @@ class UserProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'phone', 'email', 'bank_account', 'bank_name')
 
 
-@admin.register(CompanyProfile)
-class CompanyProfileAdmin(admin.ModelAdmin):
+@admin.register(UserCompany)
+class UserCompanyAdmin(admin.ModelAdmin):
     list_display = ('user', 'company_name', 'company_code', 'vat_code', 'city')
 
 
