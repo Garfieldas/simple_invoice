@@ -1,7 +1,7 @@
-django>=5.2
-django-redis>=5.4
+django
+django-redis>
 django-select2
-psycopg2-binary>=2.9
-python-dotenv>=1.0
+psycopg2-binary
+python-dotenv
 django-tailwind
 django-tailwind[reload]
