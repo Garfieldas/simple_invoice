@@ -1,11 +1,11 @@
 {% load static %}
-<header class="bg-white border-b border-gray-200 sticky top-0 z-40">
-    <div class="px-4 sm:px-6 lg:px-8 py-4">
+<header class="w-full bg-white border-b border-red-100 sticky top-0 z-40">
+    <div class="w-full px-4 sm:px-6 lg:px-8 py-4">
         <div class="flex items-center justify-between">
-            <!-- Left side: Search and breadcrumbs -->
+            <!-- Left side: Mobile button + Search -->
             <div class="flex items-center flex-1">
                 <!-- Mobile menu button -->
-                <button type="button" class="lg:hidden -ml-2 mr-3 text-gray-500 hover:text-gray-700" id="mobile-menu-button">
+                <button type="button" class="lg:hidden -ml-2 mr-3 text-gray-500 hover:text-red-600" @click="sidebarOpen = true">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
                     </svg>
@@ -20,9 +20,9 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                                 </svg>
                             </div>
-                            <input type="text" 
-                                   class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" 
-                                   placeholder="Search invoices, clients..." 
+                            <input type="text"
+                                   class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-red-500 focus:border-red-500 sm:text-sm"
+                                   placeholder="Search invoices, clients..."
                                    name="search">
                         </div>
                     </form>
@@ -32,7 +32,7 @@
             <!-- Right side: Actions and user menu -->
             <div class="flex items-center ml-4 space-x-4">
                 <!-- Create button -->
-                <a href="#" class="hidden sm:inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <a href="#" class="hidden sm:inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
                     <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                     </svg>
@@ -40,7 +40,7 @@
                 </a>
 
                 <!-- Notifications -->
-                <button type="button" class="relative p-2 text-gray-400 hover:text-gray-500">
+                <button type="button" class="relative p-2 text-gray-400 hover:text-red-600">
                     <span class="sr-only">View notifications</span>
                     <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
@@ -49,17 +49,30 @@
                 </button>
 
                 <!-- User menu -->
-                <div class="relative ml-3">
-                    <div>
-                        <button type="button" class="flex items-center space-x-2 text-sm focus:outline-none" id="user-menu-button">
-                            <span class="sr-only">Open user menu</span>
-                            <div class="h-8 w-8 rounded-full bg-indigo-600 flex items-center justify-center text-white font-medium">
-                                {{ request.user.first_name|default:request.user.email|slice:":1"|upper }}
-                            </div>
-                            <svg class="hidden sm:block h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                            </svg>
-                        </button>
+                <div class="relative ml-3" x-data="{ userMenuOpen: false }">
+                    <button type="button" class="flex items-center space-x-2 text-sm focus:outline-none" @click="userMenuOpen = !userMenuOpen">
+                        <span class="sr-only">Open user menu</span>
+                        <div class="h-8 w-8 rounded-full bg-red-600 flex items-center justify-center text-white font-medium">
+                            {{ request.user.first_name|default:request.user.email|slice:":1"|upper }}
+                        </div>
+                        <svg class="hidden sm:block h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <!-- Dropdown -->
+                    <div
+                        x-show="userMenuOpen"
+                        @click.outside="userMenuOpen = false"
+                        x-transition:enter="transition ease-out duration-100"
+                        x-transition:enter-start="transform opacity-0 scale-95"
+                        x-transition:enter-end="transform opacity-100 scale-100"
+                        x-transition:leave="transition ease-in duration-75"
+                        x-transition:leave-start="transform opacity-100 scale-100"
+                        x-transition:leave-end="transform opacity-0 scale-95"
+                        class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 ring-1 ring-black ring-opacity-5"
+                        style="display: none;">
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700">Your Profile</a>
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700">Sign out</a>
                     </div>
                 </div>
             </div>
