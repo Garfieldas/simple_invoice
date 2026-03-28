@@ -24,6 +24,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('select2/', include('django_select2.urls')),
     path('', dashboard, name='dashboard'),
+    path('', include('app.urls')),
 ]
 
 if settings.DEBUG:
