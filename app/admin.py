@@ -8,11 +8,22 @@ from app.models import Client, UserCompany, Invoice, InvoiceItem, User, UserProf
 class UserAdmin(BaseUserAdmin):
     ordering = ('email',)
     list_display = ('email', 'first_name', 'last_name', 'is_active', 'is_staff')
+    fieldsets = (
+        (None, {'fields': ('email', 'password')}),
+        ('Personal info', {'fields': ('first_name', 'last_name')}),
+        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups')}),
+    )
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('email', 'password1', 'password2'),
+        }),
+    )
 
 
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'phone_number', 'user__email', 'bank_account', 'bank_name')
+    list_display = ('user', 'phone_number', 'bank_account', 'bank_name')
 
 
 @admin.register(UserCompany)
@@ -39,16 +50,3 @@ class InvoiceAdmin(admin.ModelAdmin):
     list_filter = ('status', 'tax_enabled')
     search_fields = ('series', 'number', 'client__name')
     inlines = [InvoiceItemInline]
-
-    fieldsets = (
-        (None, {'fields': ('email', 'password')}),
-        ('Personal info', {'fields': ('first_name', 'last_name')}),
-        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
-        ('Important dates', {'fields': ('last_login', 'date_joined')}),
-    )
-    add_fieldsets = (
-        (None, {
-            'classes': ('wide',),
-            'fields': ('email', 'password1', 'password2'),
-        }),
-    )
