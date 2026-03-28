@@ -1,0 +1,58 @@
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Invoice App{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sweet_alert_min.css' %}">
+    {% tailwind_css %}
+</head>
+<body class="bg-gray-50 text-gray-900 antialiased">
+    <div class="min-h-screen flex">
+        <!-- Sidebar -->
+        {% include 'partials/sidebar.html' %}
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col lg:pl-64">
+            <!-- Header -->
+            {% include 'partials/header.html' %}
+
+            <!-- Page Content -->
+            <main class="flex-1">
+                <div class="py-6">
+                    <!-- Page Header -->
+                    <div class="px-4 sm:px-6 lg:px-8 mb-6">
+                        {% block page_header %}
+                        <div class="sm:flex sm:items-center sm:justify-between">
+                            <div>
+                                <h1 class="text-2xl font-semibold text-gray-900">{% block page_title %}{% endblock %}</h1>
+                                {% block page_subtitle %}{% endblock %}
+                            </div>
+                            {% block page_actions %}{% endblock %}
+                        </div>
+                        {% endblock %}
+                    </div>
+
+                    <!-- Messages -->
+                    {% include 'partials/messages.html' %}
+
+                    <!-- Main Content Block -->
+                    <div class="px-4 sm:px-6 lg:px-8">
+                        {% block content %}{% endblock %}
+                    </div>
+                </div>
+            </main>
+
+            <!-- Footer -->
+            {% include 'partials/footer.html' %}
+        </div>
+    </div>
+
+    <script src="{% static 'js/alpine_min.js' %}"></script>
+    <script src="{% static 'js/htmx_min.js' %}"></script>
+    <script src="{% static 'js/sweet_alert_min.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
