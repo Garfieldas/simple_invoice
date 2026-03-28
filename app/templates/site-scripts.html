@@ -1,0 +1,32 @@
+{% if messages %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    {% for message in messages %}
+    Swal.fire({
+        {% if message.tags == 'success' %}
+        icon: 'success',
+        title: 'Success',
+        {% elif message.tags == 'error' %}
+        icon: 'error',
+        title: 'Error',
+        {% elif message.tags == 'warning' %}
+        icon: 'warning',
+        title: 'Warning',
+        {% elif message.tags == 'info' %}
+        icon: 'info',
+        title: 'Info',
+        {% else %}
+        icon: 'info',
+        title: 'Notice',
+        {% endif %}
+        text: '{{ message|escapejs }}',
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+    });
+    {% endfor %}
+});
+</script>
+{% endif %}
