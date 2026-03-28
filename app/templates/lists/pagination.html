@@ -1,14 +1,14 @@
 {% if page_obj.has_other_pages %}
-<nav class="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6 rounded-b-lg" aria-label="Pagination">
+<nav class="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6 rounded-b-lg" aria-label="Puslapiavimas">
     <div class="hidden sm:block">
         <p class="text-sm text-gray-700">
-            Showing
+            Rodoma nuo
             <span class="font-medium">{{ page_obj.start_index }}</span>
-            to
+            iki
             <span class="font-medium">{{ page_obj.end_index }}</span>
-            of
+            iš
             <span class="font-medium">{{ page_obj.paginator.count }}</span>
-            results
+            rezultatų
         </p>
     </div>
     <div class="flex flex-1 justify-between sm:justify-end space-x-2">
@@ -19,7 +19,7 @@
            hx-swap="innerHTML"
            hx-push-url="true"
            class="relative inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-            Previous
+            Ankstesnis
         </a>
         {% endif %}
 
@@ -50,7 +50,7 @@
            hx-swap="innerHTML"
            hx-push-url="true"
            class="relative inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-            Next
+            Kitas
         </a>
         {% endif %}
     </div>

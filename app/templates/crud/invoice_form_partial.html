@@ -1,4 +1,4 @@
-{% include 'partials/page_header.html' with page_title=title page_subtitle="Fill in the invoice details" %}
+{% include 'partials/page_header.html' with page_title=title page_subtitle="Užpildykite sąskaitos duomenis" %}
 
 <div class="px-4 sm:px-6 lg:px-8">
 <div class="max-w-4xl">
@@ -7,7 +7,7 @@
 
         <!-- Invoice fields -->
         <div class="bg-white shadow-sm rounded-lg border border-gray-200 p-6 space-y-6">
-            <h3 class="text-lg font-medium text-gray-900">Invoice Details</h3>
+            <h3 class="text-lg font-medium text-gray-900">Sąskaitos duomenys</h3>
             {% for field in form %}
             <div>
                 <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">{{ field.label }}</label>
@@ -21,7 +21,7 @@
 
         <!-- Line items -->
         <div class="bg-white shadow-sm rounded-lg border border-gray-200 p-6" id="line-items">
-            <h3 class="text-lg font-medium text-gray-900 mb-4">Line Items</h3>
+            <h3 class="text-lg font-medium text-gray-900 mb-4">Eilutės</h3>
             {{ formset.management_form }}
             <div id="formset-container">
                 {% for item_form in formset %}
@@ -46,7 +46,7 @@
                     <div class="mt-3 flex items-center">
                         <label class="inline-flex items-center text-sm text-red-600 cursor-pointer">
                             {{ item_form.DELETE }}
-                            <span class="ml-2">Remove this item</span>
+                            <span class="ml-2">Pašalinti šią eilutę</span>
                         </label>
                     </div>
                     {% endif %}
@@ -57,7 +57,7 @@
                 <svg class="-ml-0.5 mr-1.5 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                 </svg>
-                Add Line Item
+                Pridėti eilutę
             </button>
         </div>
 
@@ -68,10 +68,10 @@
                hx-swap="innerHTML"
                hx-push-url="true"
                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
-                Cancel
+                Atšaukti
             </a>
             <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-lg hover:bg-red-700">
-                Save Invoice
+                Išsaugoti sąskaitą
             </button>
         </div>
     </form>

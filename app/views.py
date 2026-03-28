@@ -46,7 +46,7 @@ def register_view(request):
     if request.method == 'POST' and form.is_valid():
         user = form.save()
         login(request, user)
-        messages.success(request, 'Account created successfully.')
+        messages.success(request, 'Paskyra sėkmingai sukurta.')
         return redirect('dashboard')
     return render(request, 'auth/register.html', {'form': form})
 
@@ -106,10 +106,10 @@ def invoice_create(request):
         invoice.save()
         formset.instance = invoice
         formset.save()
-        messages.success(request, 'Invoice created successfully.')
+        messages.success(request, 'Sąskaita sėkmingai sukurta.')
         return redirect('invoice_list')
 
-    context = {'form': form, 'formset': formset, 'title': 'Create Invoice'}
+    context = {'form': form, 'formset': formset, 'title': 'Sukurti sąskaitą'}
     if _is_htmx(request):
         return render(request, 'crud/invoice_form_partial.html', context)
     return render(request, 'crud/invoice_form.html', context)
@@ -125,10 +125,10 @@ def invoice_edit(request, pk):
     if request.method == 'POST' and form.is_valid() and formset.is_valid():
         form.save()
         formset.save()
-        messages.success(request, 'Invoice updated successfully.')
+        messages.success(request, 'Sąskaita sėkmingai atnaujinta.')
         return redirect('invoice_list')
 
-    context = {'form': form, 'formset': formset, 'title': 'Edit Invoice', 'invoice': invoice}
+    context = {'form': form, 'formset': formset, 'title': 'Redaguoti sąskaitą', 'invoice': invoice}
     if _is_htmx(request):
         return render(request, 'crud/invoice_form_partial.html', context)
     return render(request, 'crud/invoice_form.html', context)
@@ -142,12 +142,12 @@ def invoice_delete(request, pk):
         if _is_htmx(request):
             response = HttpResponse(status=200)
             response['HX-Trigger'] = json.dumps({
-                'showMessage': 'Invoice deleted successfully.'
+                'showMessage': 'Sąskaita sėkmingai ištrinta.'
             })
             return response
-        messages.success(request, 'Invoice deleted successfully.')
+        messages.success(request, 'Sąskaita sėkmingai ištrinta.')
         return redirect('invoice_list')
-    context = {'object': invoice, 'title': 'Delete Invoice', 'cancel_url': 'invoice_list'}
+    context = {'object': invoice, 'title': 'Ištrinti sąskaitą', 'cancel_url': 'invoice_list'}
     if _is_htmx(request):
         return render(request, 'crud/confirm_delete_partial.html', context)
     return render(request, 'crud/confirm_delete.html', context)
@@ -187,10 +187,10 @@ def client_create(request):
         client = form.save(commit=False)
         client.user = request.user
         client.save()
-        messages.success(request, 'Client created successfully.')
+        messages.success(request, 'Klientas sėkmingai sukurtas.')
         return redirect('client_list')
 
-    context = {'form': form, 'title': 'Add Client'}
+    context = {'form': form, 'title': 'Pridėti klientą'}
     if _is_htmx(request):
         return render(request, 'crud/client_form_partial.html', context)
     return render(request, 'crud/client_form.html', context)
@@ -202,10 +202,10 @@ def client_edit(request, pk):
     form = ClientForm(request.POST or None, instance=client)
     if request.method == 'POST' and form.is_valid():
         form.save()
-        messages.success(request, 'Client updated successfully.')
+        messages.success(request, 'Klientas sėkmingai atnaujintas.')
         return redirect('client_list')
 
-    context = {'form': form, 'title': 'Edit Client', 'client': client}
+    context = {'form': form, 'title': 'Redaguoti klientą', 'client': client}
     if _is_htmx(request):
         return render(request, 'crud/client_form_partial.html', context)
     return render(request, 'crud/client_form.html', context)
@@ -219,12 +219,12 @@ def client_delete(request, pk):
         if _is_htmx(request):
             response = HttpResponse(status=200)
             response['HX-Trigger'] = json.dumps({
-                'showMessage': 'Client deleted successfully.'
+                'showMessage': 'Klientas sėkmingai ištrintas.'
             })
             return response
-        messages.success(request, 'Client deleted successfully.')
+        messages.success(request, 'Klientas sėkmingai ištrintas.')
         return redirect('client_list')
-    context = {'object': client, 'title': 'Delete Client', 'cancel_url': 'client_list'}
+    context = {'object': client, 'title': 'Ištrinti klientą', 'cancel_url': 'client_list'}
     if _is_htmx(request):
         return render(request, 'crud/confirm_delete_partial.html', context)
     return render(request, 'crud/confirm_delete.html', context)
@@ -258,10 +258,10 @@ def company_create(request):
         company = form.save(commit=False)
         company.user = request.user
         company.save()
-        messages.success(request, 'Company created successfully.')
+        messages.success(request, 'Įmonė sėkmingai sukurta.')
         return redirect('company_list')
 
-    context = {'form': form, 'title': 'Add Company'}
+    context = {'form': form, 'title': 'Pridėti įmonę'}
     if _is_htmx(request):
         return render(request, 'crud/company_form_partial.html', context)
     return render(request, 'crud/company_form.html', context)
@@ -273,10 +273,10 @@ def company_edit(request, pk):
     form = UserCompanyForm(request.POST or None, instance=company)
     if request.method == 'POST' and form.is_valid():
         form.save()
-        messages.success(request, 'Company updated successfully.')
+        messages.success(request, 'Įmonė sėkmingai atnaujinta.')
         return redirect('company_list')
 
-    context = {'form': form, 'title': 'Edit Company', 'company': company}
+    context = {'form': form, 'title': 'Redaguoti įmonę', 'company': company}
     if _is_htmx(request):
         return render(request, 'crud/company_form_partial.html', context)
     return render(request, 'crud/company_form.html', context)
@@ -290,12 +290,12 @@ def company_delete(request, pk):
         if _is_htmx(request):
             response = HttpResponse(status=200)
             response['HX-Trigger'] = json.dumps({
-                'showMessage': 'Company deleted successfully.'
+                'showMessage': 'Įmonė sėkmingai ištrinta.'
             })
             return response
-        messages.success(request, 'Company deleted successfully.')
+        messages.success(request, 'Įmonė sėkmingai ištrinta.')
         return redirect('company_list')
-    context = {'object': company, 'title': 'Delete Company', 'cancel_url': 'company_list'}
+    context = {'object': company, 'title': 'Ištrinti įmonę', 'cancel_url': 'company_list'}
     if _is_htmx(request):
         return render(request, 'crud/confirm_delete_partial.html', context)
     return render(request, 'crud/confirm_delete.html', context)
@@ -311,10 +311,10 @@ def profile_edit(request):
     form = UserProfileForm(request.POST or None, instance=profile)
     if request.method == 'POST' and form.is_valid():
         form.save()
-        messages.success(request, 'Profile updated successfully.')
+        messages.success(request, 'Profilis sėkmingai atnaujintas.')
         return redirect('profile_edit')
 
-    context = {'form': form, 'title': 'Your Profile'}
+    context = {'form': form, 'title': 'Jūsų profilis'}
     if _is_htmx(request):
         return render(request, 'crud/profile_form_partial.html', context)
     return render(request, 'crud/profile_form.html', context)

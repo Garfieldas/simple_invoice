@@ -1,4 +1,4 @@
-{% include 'partials/page_header.html' with page_title=title page_subtitle="This action cannot be undone" %}
+{% include 'partials/page_header.html' with page_title=title page_subtitle="Šio veiksmo negalima atšaukti" %}
 
 <div class="px-4 sm:px-6 lg:px-8">
 <div class="max-w-lg">
@@ -10,8 +10,8 @@
                 </svg>
             </div>
             <div>
-                <h3 class="text-lg font-medium text-gray-900">Are you sure?</h3>
-                <p class="text-sm text-gray-500">You are about to delete <strong>{{ object }}</strong>. This action cannot be undone.</p>
+                <h3 class="text-lg font-medium text-gray-900">Ar tikrai?</h3>
+                <p class="text-sm text-gray-500">Ketinate ištrinti <strong>{{ object }}</strong>. Šio veiksmo negalima atšaukti.</p>
             </div>
         </div>
         <form method="post">
@@ -23,10 +23,10 @@
                    hx-swap="innerHTML"
                    hx-push-url="true"
                    class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
-                    Cancel
+                    Atšaukti
                 </a>
                 <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-lg hover:bg-red-700">
-                    Delete
+                    Ištrinti
                 </button>
             </div>
         </form>

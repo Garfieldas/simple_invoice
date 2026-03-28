@@ -78,8 +78,8 @@ class Client(models.Model):
     CLIENT_INDIVIDUAL = 'individual'
 
     CLIENT_TYPES = [
-    (CLIENT_BUSINESS, _('Business')),
-    (CLIENT_INDIVIDUAL, _('Individual')),
+    (CLIENT_BUSINESS, _('Įmonė')),
+    (CLIENT_INDIVIDUAL, _('Fizinis asmuo')),
     ]   
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='clients')
@@ -109,11 +109,11 @@ class Invoice(models.Model):
     STATUS_CANCELLED = 'cancelled'
 
     INVOICE_STATUSES = [
-    (STATUS_DRAFT, _('Draft')),
-    (STATUS_SENT, _('Sent')),
-    (STATUS_PAID, _('Paid')),
-    (STATUS_OVERDUE, _('Overdue')),
-    (STATUS_CANCELLED, _('Cancelled')),
+    (STATUS_DRAFT, _('Juodraštis')),
+    (STATUS_SENT, _('Išsiųsta')),
+    (STATUS_PAID, _('Apmokėta')),
+    (STATUS_OVERDUE, _('Vėluojanti')),
+    (STATUS_CANCELLED, _('Atšaukta')),
     ]
 
     TAX_RATE_21 = '21.00'

@@ -5,19 +5,19 @@ document.addEventListener('DOMContentLoaded', function() {
     Swal.fire({
         {% if message.tags == 'success' %}
         icon: 'success',
-        title: 'Success',
+        title: 'Sėkmė',
         {% elif message.tags == 'error' %}
         icon: 'error',
-        title: 'Error',
+        title: 'Klaida',
         {% elif message.tags == 'warning' %}
         icon: 'warning',
-        title: 'Warning',
+        title: 'Įspėjimas',
         {% elif message.tags == 'info' %}
         icon: 'info',
-        title: 'Info',
+        title: 'Informacija',
         {% else %}
         icon: 'info',
-        title: 'Notice',
+        title: 'Pranešimas',
         {% endif %}
         text: '{{ message|escapejs }}',
         toast: true,
@@ -35,13 +35,14 @@ document.addEventListener('htmx:confirm', function(e) {
     if (!e.detail.question) return;
     e.preventDefault();
     Swal.fire({
-        title: 'Are you sure?',
+        title: 'Ar tikrai?',
         text: e.detail.question,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#dc2626',
         cancelButtonColor: '#6b7280',
-        confirmButtonText: 'Yes, delete it!',
+        confirmButtonText: 'Taip, ištrinti!',
+        cancelButtonText: 'Atšaukti',
     }).then(function(result) {
         if (result.isConfirmed) {
             e.detail.issueRequest(true);
@@ -52,8 +53,8 @@ document.addEventListener('htmx:confirm', function(e) {
 document.body.addEventListener('showMessage', function(e) {
     Swal.fire({
         icon: 'success',
-        title: 'Deleted!',
-        text: e.detail.value || 'Item deleted successfully.',
+        title: 'Ištrinta!',
+        text: e.detail.value || 'Elementas sėkmingai ištrintas.',
         toast: true,
         position: 'top-end',
         showConfirmButton: false,

@@ -1,4 +1,4 @@
-{% include 'partials/page_header.html' with page_title="Invoices" page_subtitle="Manage your invoices" %}
+{% include 'partials/page_header.html' with page_title="Sąskaitos" page_subtitle="Tvarkykite savo sąskaitas" %}
 
 <div class="px-4 sm:px-6 lg:px-8">
 <div class="mb-4 flex items-center justify-end">
@@ -11,7 +11,7 @@
         <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
         </svg>
-        New Invoice
+        Nauja sąskaita
     </a>
 </div>
 <div id="list-container">
@@ -24,7 +24,7 @@
            hx-push-url="true"
            :class="currentStatus === '' ? 'bg-red-600 text-white' : 'bg-white text-gray-700 ring-1 ring-inset ring-gray-300 hover:bg-gray-50'"
            class="inline-flex items-center rounded-md px-3 py-1.5 text-sm font-medium transition-colors">
-            All
+            Visos
         </a>
         {% for value, label in status_choices %}
         <a href="{% url 'invoice_list' %}?status={{ value }}"
@@ -44,13 +44,13 @@
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
                 <tr>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Invoice #</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Issue Date</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Due Date</th>
-                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
-                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sąskaitos Nr.</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Klientas</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Būsena</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Išrašymo data</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Apmokėjimo data</th>
+                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Suma</th>
+                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Veiksmai</th>
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
@@ -64,15 +64,15 @@
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
                         {% if invoice.status == 'draft' %}
-                        <span class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800">Draft</span>
+                        <span class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800">Juodraštis</span>
                         {% elif invoice.status == 'sent' %}
-                        <span class="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800">Sent</span>
+                        <span class="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800">Išsiųsta</span>
                         {% elif invoice.status == 'paid' %}
-                        <span class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">Paid</span>
+                        <span class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">Apmokėta</span>
                         {% elif invoice.status == 'overdue' %}
-                        <span class="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800">Overdue</span>
+                        <span class="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800">Vėluojanti</span>
                         {% elif invoice.status == 'cancelled' %}
-                        <span class="inline-flex items-center rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800">Cancelled</span>
+                        <span class="inline-flex items-center rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800">Atšaukta</span>
                         {% endif %}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -85,17 +85,20 @@
                         &euro;{{ invoice.total }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+                        <a href="{% url 'invoice_pdf' invoice.pk %}"
+                           target="_blank"
+                           class="text-green-600 hover:text-green-900">PDF</a>
                         <a href="{% url 'invoice_edit' invoice.pk %}"
                            hx-get="{% url 'invoice_edit' invoice.pk %}"
                            hx-target="#main-content"
                            hx-swap="innerHTML"
                            hx-push-url="true"
-                           class="text-red-600 hover:text-red-900">Edit</a>
+                           class="text-red-600 hover:text-red-900">Redaguoti</a>
                         <button hx-post="{% url 'invoice_delete' invoice.pk %}"
                                 hx-target="closest tr"
                                 hx-swap="outerHTML swap:0.5s"
-                                hx-confirm="You are about to delete this invoice. This action cannot be undone."
-                                class="text-gray-400 hover:text-red-600">Delete</button>
+                                hx-confirm="Ketinate ištrinti šią sąskaitą. Šio veiksmo negalima atšaukti."
+                                class="text-gray-400 hover:text-red-600">Ištrinti</button>
                     </td>
                 </tr>
                 {% empty %}
@@ -104,8 +107,8 @@
                         <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                         </svg>
-                        <h3 class="mt-2 text-sm font-medium text-gray-900">No invoices</h3>
-                        <p class="mt-1 text-sm text-gray-500">Get started by creating a new invoice.</p>
+                        <h3 class="mt-2 text-sm font-medium text-gray-900">Nėra sąskaitų</h3>
+                        <p class="mt-1 text-sm text-gray-500">Pradėkite sukurdami naują sąskaitą.</p>
                     </td>
                 </tr>
                 {% endfor %}
