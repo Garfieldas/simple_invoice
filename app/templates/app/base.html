@@ -1,0 +1,76 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-gray-50">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Simple Invoice{% endblock %}</title>
+
+  <!-- Tailwind CSS CDN (Play CDN for development) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              blue:         '#1e3a8a',
+              'blue-hover': '#1e40af',
+              'blue-light': '#dbeafe',
+              yellow:       '#eab308',
+              'yellow-hover':'#ca8a04',
+              'yellow-light':'#fef9c3',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Custom component classes -->
+  <link rel="stylesheet" href="{% static 'app/css/main.css' %}" />
+
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="h-full">
+
+  <!-- Mobile sidebar overlay -->
+  <div id="sidebar-overlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
+
+  <div class="layout-wrapper">
+
+    <!-- ── Sidebar ────────────────────────────────────────────────────── -->
+    {% include "app/partials/sidebar.html" %}
+
+    <!-- ── Main area ─────────────────────────────────────────────────── -->
+    <div class="layout-main">
+
+      <!-- Top header -->
+      {% include "app/partials/header.html" %}
+
+      <!-- Flash messages -->
+      {% include "app/partials/messages.html" %}
+
+      <!-- Page content -->
+      <main class="layout-content">
+        {% block content %}{% endblock %}
+      </main>
+
+    </div><!-- /layout-main -->
+  </div><!-- /layout-wrapper -->
+
+  <!-- Mobile sidebar JS -->
+  <script>
+    function openSidebar() {
+      document.getElementById('app-sidebar').classList.add('open');
+      document.getElementById('sidebar-overlay').classList.add('open');
+    }
+    function closeSidebar() {
+      document.getElementById('app-sidebar').classList.remove('open');
+      document.getElementById('sidebar-overlay').classList.remove('open');
+    }
+  </script>
+
+  {% block extra_js %}{% endblock %}
+</body>
+</html>
