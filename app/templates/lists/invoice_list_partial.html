@@ -1,0 +1,93 @@
+{% include 'partials/page_header.html' with page_title="Invoices" page_subtitle="Manage your invoices" %}
+
+{% include 'partials/messages.html' %}
+
+<div class="px-4 sm:px-6 lg:px-8">
+<div id="list-container">
+    <!-- Status filter -->
+    <div class="mb-4 flex flex-wrap gap-2" x-data="{ currentStatus: '{{ current_status }}' }">
+        <a href="{% url 'invoice_list' %}"
+           hx-get="{% url 'invoice_list' %}"
+           hx-target="#list-container"
+           hx-swap="innerHTML"
+           hx-push-url="true"
+           :class="currentStatus === '' ? 'bg-red-600 text-white' : 'bg-white text-gray-700 ring-1 ring-inset ring-gray-300 hover:bg-gray-50'"
+           class="inline-flex items-center rounded-md px-3 py-1.5 text-sm font-medium transition-colors">
+            All
+        </a>
+        {% for value, label in status_choices %}
+        <a href="{% url 'invoice_list' %}?status={{ value }}"
+           hx-get="{% url 'invoice_list' %}?status={{ value }}"
+           hx-target="#list-container"
+           hx-swap="innerHTML"
+           hx-push-url="true"
+           :class="currentStatus === '{{ value }}' ? 'bg-red-600 text-white' : 'bg-white text-gray-700 ring-1 ring-inset ring-gray-300 hover:bg-gray-50'"
+           class="inline-flex items-center rounded-md px-3 py-1.5 text-sm font-medium transition-colors">
+            {{ label }}
+        </a>
+        {% endfor %}
+    </div>
+
+    <!-- Invoice table -->
+    <div class="bg-white shadow-sm rounded-lg border border-gray-200 overflow-hidden">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Invoice #</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Issue Date</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Due Date</th>
+                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                {% for invoice in page_obj %}
+                <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        {{ invoice.invoice_number }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {{ invoice.client.name }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        {% if invoice.status == 'draft' %}
+                        <span class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800">Draft</span>
+                        {% elif invoice.status == 'sent' %}
+                        <span class="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800">Sent</span>
+                        {% elif invoice.status == 'paid' %}
+                        <span class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">Paid</span>
+                        {% elif invoice.status == 'overdue' %}
+                        <span class="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800">Overdue</span>
+                        {% elif invoice.status == 'cancelled' %}
+                        <span class="inline-flex items-center rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800">Cancelled</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {{ invoice.issue_date }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {{ invoice.due_date }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right font-medium">
+                        &euro;{{ invoice.total }}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="px-6 py-12 text-center">
+                        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        <h3 class="mt-2 text-sm font-medium text-gray-900">No invoices</h3>
+                        <p class="mt-1 text-sm text-gray-500">Get started by creating a new invoice.</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% include 'lists/pagination.html' %}
+    </div>
+</div>
+</div>
