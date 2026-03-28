@@ -18,9 +18,12 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path
 
+from app.views import dashboard
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('select2/', include('django_select2.urls')),
+    path('', dashboard, name='dashboard'),
 ]
 
 if settings.DEBUG:
