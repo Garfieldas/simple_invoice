@@ -2,7 +2,10 @@ from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
+
+import json
 
 from app.forms import (
     ClientForm,
@@ -136,6 +139,12 @@ def invoice_delete(request, pk):
     invoice = get_object_or_404(Invoice, pk=pk, user=request.user)
     if request.method == 'POST':
         invoice.delete()
+        if _is_htmx(request):
+            response = HttpResponse(status=200)
+            response['HX-Trigger'] = json.dumps({
+                'showMessage': 'Invoice deleted successfully.'
+            })
+            return response
         messages.success(request, 'Invoice deleted successfully.')
         return redirect('invoice_list')
     context = {'object': invoice, 'title': 'Delete Invoice', 'cancel_url': 'invoice_list'}
@@ -207,6 +216,12 @@ def client_delete(request, pk):
     client = get_object_or_404(Client, pk=pk, user=request.user)
     if request.method == 'POST':
         client.delete()
+        if _is_htmx(request):
+            response = HttpResponse(status=200)
+            response['HX-Trigger'] = json.dumps({
+                'showMessage': 'Client deleted successfully.'
+            })
+            return response
         messages.success(request, 'Client deleted successfully.')
         return redirect('client_list')
     context = {'object': client, 'title': 'Delete Client', 'cancel_url': 'client_list'}
@@ -272,6 +287,12 @@ def company_delete(request, pk):
     company = get_object_or_404(UserCompany, pk=pk, user=request.user)
     if request.method == 'POST':
         company.delete()
+        if _is_htmx(request):
+            response = HttpResponse(status=200)
+            response['HX-Trigger'] = json.dumps({
+                'showMessage': 'Company deleted successfully.'
+            })
+            return response
         messages.success(request, 'Company deleted successfully.')
         return redirect('company_list')
     context = {'object': company, 'title': 'Delete Company', 'cancel_url': 'company_list'}

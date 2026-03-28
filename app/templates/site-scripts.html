@@ -30,3 +30,35 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 {% endif %}
+<script>
+document.addEventListener('htmx:confirm', function(e) {
+    if (!e.detail.question) return;
+    e.preventDefault();
+    Swal.fire({
+        title: 'Are you sure?',
+        text: e.detail.question,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc2626',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'Yes, delete it!',
+    }).then(function(result) {
+        if (result.isConfirmed) {
+            e.detail.issueRequest(true);
+        }
+    });
+});
+
+document.body.addEventListener('showMessage', function(e) {
+    Swal.fire({
+        icon: 'success',
+        title: 'Deleted!',
+        text: e.detail.value || 'Item deleted successfully.',
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+    });
+});
+</script>

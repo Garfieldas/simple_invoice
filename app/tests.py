@@ -627,3 +627,66 @@ class ProfileCrudTests(ViewTestMixin, TestCase):
         profile = UserProfile.objects.get(user=self.user)
         self.assertEqual(profile.city, 'Vilnius')
         self.assertEqual(profile.bank_name, 'Swedbank')
+
+
+class HtmxDeleteTests(ViewTestMixin, TestCase):
+    """Test that HTMX delete requests return empty body with HX-Trigger header."""
+
+    def test_invoice_htmx_delete_returns_empty_response(self):
+        response = self.client.post(
+            reverse('invoice_delete', args=[self.invoice.pk]),
+            HTTP_HX_REQUEST='true',
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content, b'')
+        self.assertIn('showMessage', response['HX-Trigger'])
+        self.assertFalse(Invoice.objects.filter(pk=self.invoice.pk).exists())
+
+    def test_client_htmx_delete_returns_empty_response(self):
+        Invoice.objects.all().delete()
+        response = self.client.post(
+            reverse('client_delete', args=[self.client_obj.pk]),
+            HTTP_HX_REQUEST='true',
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content, b'')
+        self.assertIn('showMessage', response['HX-Trigger'])
+        self.assertFalse(Client.objects.filter(pk=self.client_obj.pk).exists())
+
+    def test_company_htmx_delete_returns_empty_response(self):
+        response = self.client.post(
+            reverse('company_delete', args=[self.company.pk]),
+            HTTP_HX_REQUEST='true',
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content, b'')
+        self.assertIn('showMessage', response['HX-Trigger'])
+        self.assertFalse(UserCompany.objects.filter(pk=self.company.pk).exists())
+
+
+class SwapTargetTests(ViewTestMixin, TestCase):
+    """Test that filter buttons target #main-content instead of #list-container."""
+
+    def test_invoice_filter_targets_main_content(self):
+        response = self.client.get(
+            reverse('invoice_list'), HTTP_HX_REQUEST='true'
+        )
+        content = response.content.decode()
+        self.assertNotIn('hx-target="#list-container"', content)
+        self.assertIn('hx-target="#main-content"', content)
+
+    def test_client_filter_targets_main_content(self):
+        response = self.client.get(
+            reverse('client_list'), HTTP_HX_REQUEST='true'
+        )
+        content = response.content.decode()
+        self.assertNotIn('hx-target="#list-container"', content)
+        self.assertIn('hx-target="#main-content"', content)
+
+    def test_invoice_list_has_hx_confirm_delete(self):
+        response = self.client.get(
+            reverse('invoice_list'), HTTP_HX_REQUEST='true'
+        )
+        content = response.content.decode()
+        self.assertIn('hx-confirm=', content)
+        self.assertIn('hx-post=', content)
