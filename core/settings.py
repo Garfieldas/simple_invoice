@@ -42,6 +42,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_browser_reload',
+    "tailwind",
+    'theme',
     'app',
     'django_select2',
 ]
@@ -144,8 +147,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Tailwind CSS
 TAILWIND_APP_NAME = 'theme'
-INTERNAL_IPS = ['127.0.0.1']
-NPM_BIN_PATH = '/usr/local/bin/npm'
 
 # Cache
 # https://docs.djangoproject.com/en/stable/topics/cache/
