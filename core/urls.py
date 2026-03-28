@@ -27,6 +27,7 @@ urlpatterns = [
     path('invoices/', invoice_list, name='invoice_list'),
     path('clients/', client_list, name='client_list'),
     path('companies/', company_list, name='company_list'),
+    path('', include('app.urls')),
 ]
 
 if settings.DEBUG:

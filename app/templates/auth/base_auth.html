@@ -1,0 +1,39 @@
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Invoice App{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    {% tailwind_css %}
+</head>
+<body class="bg-gray-50 text-gray-900 antialiased">
+    <div class="flex min-h-screen items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
+        <div class="w-full max-w-md space-y-8">
+            <!-- Logo / Brand -->
+            <div class="text-center">
+                <h1 class="text-3xl font-bold tracking-tight text-gray-900">Invoice App</h1>
+                <p class="mt-2 text-sm text-gray-600">{% block subtitle %}{% endblock %}</p>
+            </div>
+
+            <!-- Card -->
+            <div class="rounded-xl bg-white px-6 py-8 shadow-sm ring-1 ring-gray-900/5 sm:px-8">
+                {% if messages %}
+                <div class="mb-6 space-y-3">
+                    {% for message in messages %}
+                    <div class="rounded-lg p-3 text-sm {% if message.tags == 'success' %}bg-green-50 text-green-800 border border-green-200{% elif message.tags == 'error' %}bg-red-50 text-red-800 border border-red-200{% else %}bg-blue-50 text-blue-800 border border-blue-200{% endif %}">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                {% block content %}{% endblock %}
+            </div>
+
+            {% block footer_links %}{% endblock %}
+        </div>
+    </div>
+</body>
+</html>
