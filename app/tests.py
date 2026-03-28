@@ -92,7 +92,7 @@ class InvoiceListViewTests(ViewTestMixin, TestCase):
             reverse('invoice_list'), {'status': 'paid'}
         )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'No invoices')
+        self.assertContains(response, 'Nėra sąskaitų')
 
     def test_invoice_list_pagination(self):
         # Create enough invoices to require pagination
@@ -117,7 +117,7 @@ class InvoiceListViewTests(ViewTestMixin, TestCase):
         Invoice.objects.all().delete()
         response = self.client.get(reverse('invoice_list'))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'No invoices')
+        self.assertContains(response, 'Nėra sąskaitų')
 
 
 class ClientListViewTests(ViewTestMixin, TestCase):
@@ -148,14 +148,14 @@ class ClientListViewTests(ViewTestMixin, TestCase):
             reverse('client_list'), {'client_type': 'individual'}
         )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'No clients')
+        self.assertContains(response, 'Nėra klientų')
 
     def test_client_list_empty(self):
         Invoice.objects.all().delete()
         Client.objects.all().delete()
         response = self.client.get(reverse('client_list'))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'No clients')
+        self.assertContains(response, 'Nėra klientų')
 
 
 class CompanyListViewTests(ViewTestMixin, TestCase):
@@ -178,7 +178,7 @@ class CompanyListViewTests(ViewTestMixin, TestCase):
         UserCompany.objects.all().delete()
         response = self.client.get(reverse('company_list'))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'No companies')
+        self.assertContains(response, 'Nėra įmonių')
 
 
 class PaginationComponentTests(ViewTestMixin, TestCase):
@@ -186,7 +186,7 @@ class PaginationComponentTests(ViewTestMixin, TestCase):
     def test_pagination_not_shown_single_page(self):
         response = self.client.get(reverse('invoice_list'))
         self.assertEqual(response.status_code, 200)
-        self.assertNotContains(response, 'aria-label="Pagination"')
+        self.assertNotContains(response, 'aria-label="Puslapiavimas"')
 
     def test_pagination_shown_multiple_pages(self):
         for i in range(2, 15):
@@ -201,7 +201,7 @@ class PaginationComponentTests(ViewTestMixin, TestCase):
             )
         response = self.client.get(reverse('invoice_list'))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'aria-label="Pagination"')
+        self.assertContains(response, 'aria-label="Puslapiavimas"')
         self.assertContains(response, 'hx-get')
 
 
@@ -240,7 +240,7 @@ class LoginViewTests(DjangoTestCase):
     def test_login_page_renders(self):
         response = self.client.get(url_reverse('login'))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Sign in')
+        self.assertContains(response, 'Prisijungti')
 
     def test_login_with_valid_credentials(self):
         response = self.client.post(
@@ -255,7 +255,7 @@ class LoginViewTests(DjangoTestCase):
             {'username': 'test@example.com', 'password': 'wrongpass'},
         )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Please enter a correct email and password')
+        self.assertContains(response, 'Įveskite teisingą')
 
     def test_authenticated_user_redirected_from_login(self):
         self.client.login(username='test@example.com', password='testpass123')
@@ -275,7 +275,7 @@ class RegisterViewTests(DjangoTestCase):
     def test_register_page_renders(self):
         response = self.client.get(url_reverse('register'))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Create account')
+        self.assertContains(response, 'Sukurti paskyrą')
 
     def test_register_with_valid_data(self):
         response = self.client.post(
@@ -354,17 +354,17 @@ class PasswordResetViewTests(DjangoTestCase):
     def test_password_reset_page_renders(self):
         response = self.client.get(url_reverse('password_reset'))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Send reset link')
+        self.assertContains(response, 'Siųsti atkūrimo nuorodą')
 
     def test_password_reset_done_page_renders(self):
         response = self.client.get(url_reverse('password_reset_done'))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Check your email')
+        self.assertContains(response, 'Patikrinkite savo el. paštą')
 
     def test_password_reset_complete_page_renders(self):
         response = self.client.get(url_reverse('password_reset_complete'))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Password reset complete')
+        self.assertContains(response, 'Slaptažodis sėkmingai atkurtas')
 
 
 @override_settings(
@@ -690,3 +690,79 @@ class SwapTargetTests(ViewTestMixin, TestCase):
         content = response.content.decode()
         self.assertIn('hx-confirm=', content)
         self.assertIn('hx-post=', content)
+
+
+class AmountToWordsLtTests(TestCase):
+    """Test Lithuanian number-to-words conversion."""
+
+    def test_zero(self):
+        from app.utils import amount_to_words_lt
+        result = amount_to_words_lt(Decimal('0.00'))
+        self.assertEqual(result, 'nulis EUR ir 00 ct')
+
+    def test_one(self):
+        from app.utils import amount_to_words_lt
+        result = amount_to_words_lt(Decimal('1.00'))
+        self.assertEqual(result, 'vienas EUR ir 00 ct')
+
+    def test_cents(self):
+        from app.utils import amount_to_words_lt
+        result = amount_to_words_lt(Decimal('0.99'))
+        self.assertEqual(result, 'nulis EUR ir 99 ct')
+
+    def test_typical_amount(self):
+        from app.utils import amount_to_words_lt
+        result = amount_to_words_lt(Decimal('1234.56'))
+        self.assertIn('tūkstantis', result)
+        self.assertIn('56 ct', result)
+
+    def test_large_amount(self):
+        from app.utils import amount_to_words_lt
+        result = amount_to_words_lt(Decimal('1000000.00'))
+        self.assertIn('milijonas', result)
+
+    def test_twenty_one(self):
+        from app.utils import amount_to_words_lt
+        result = amount_to_words_lt(Decimal('21.00'))
+        self.assertIn('dvidešimt', result)
+        self.assertIn('vienas', result)
+
+
+class InvoicePdfViewTests(ViewTestMixin, TestCase):
+
+    def test_pdf_returns_200(self):
+        response = self.client.get(reverse('invoice_pdf', args=[self.invoice.pk]))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response['Content-Type'], 'application/pdf')
+
+    def test_pdf_inline_content_disposition(self):
+        response = self.client.get(reverse('invoice_pdf', args=[self.invoice.pk]))
+        self.assertIn('inline', response['Content-Disposition'])
+
+    def test_pdf_download_content_disposition(self):
+        response = self.client.get(
+            reverse('invoice_pdf', args=[self.invoice.pk]),
+            {'download': '1'},
+        )
+        self.assertIn('attachment', response['Content-Disposition'])
+
+    def test_pdf_requires_login(self):
+        self.client.logout()
+        response = self.client.get(reverse('invoice_pdf', args=[self.invoice.pk]))
+        self.assertEqual(response.status_code, 302)
+
+    def test_pdf_other_user_404(self):
+        other_user = User.objects.create_user(
+            email='other@example.com', password='testpass123'
+        )
+        self.client.force_login(other_user)
+        response = self.client.get(reverse('invoice_pdf', args=[self.invoice.pk]))
+        self.assertEqual(response.status_code, 404)
+
+    def test_pdf_content_starts_with_pdf_header(self):
+        response = self.client.get(reverse('invoice_pdf', args=[self.invoice.pk]))
+        self.assertTrue(response.content[:5] == b'%PDF-')
+
+    def test_invoice_list_has_pdf_link(self):
+        response = self.client.get(reverse('invoice_list'))
+        self.assertContains(response, reverse('invoice_pdf', args=[self.invoice.pk]))

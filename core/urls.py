@@ -32,6 +32,7 @@ from app.views import (
     invoice_delete,
     invoice_edit,
     invoice_list,
+    invoice_pdf,
     profile_edit,
 )
 
@@ -44,6 +45,7 @@ urlpatterns = [
     path('invoices/create/', invoice_create, name='invoice_create'),
     path('invoices/<int:pk>/edit/', invoice_edit, name='invoice_edit'),
     path('invoices/<int:pk>/delete/', invoice_delete, name='invoice_delete'),
+    path('invoices/<int:pk>/pdf/', invoice_pdf, name='invoice_pdf'),
     # Clients
     path('clients/', client_list, name='client_list'),
     path('clients/create/', client_create, name='client_create'),
