@@ -46,6 +46,7 @@ class UserProfile(models.Model):
     address = models.TextField(blank=True)
     address = models.CharField(max_length=200, blank=True)
     city = models.CharField(max_length=200, blank=True)
+    personal_code = models.CharField(max_length=50, blank=True)
     postal_code = models.CharField(max_length=200, blank=True)
     apartment_number = models.CharField(max_length=200, blank=True)
     bank_account = models.CharField(max_length=34, blank=True)  # IBAN max length
