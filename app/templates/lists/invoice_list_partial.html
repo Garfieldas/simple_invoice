@@ -1,8 +1,7 @@
 {% include 'partials/page_header.html' with page_title="Invoices" page_subtitle="Manage your invoices" %}
 
 <div class="px-4 sm:px-6 lg:px-8">
-<div class="mb-4 flex items-center justify-between">
-    <div></div>
+<div class="mb-4 flex items-center justify-end">
     <a href="{% url 'invoice_create' %}"
        hx-get="{% url 'invoice_create' %}"
        hx-target="#main-content"
