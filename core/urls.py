@@ -18,12 +18,15 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path
 
-from app.views import dashboard
+from app.views import client_list, company_list, dashboard, invoice_list
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('select2/', include('django_select2.urls')),
     path('', dashboard, name='dashboard'),
+    path('invoices/', invoice_list, name='invoice_list'),
+    path('clients/', client_list, name='client_list'),
+    path('companies/', company_list, name='company_list'),
 ]
 
 if settings.DEBUG:
