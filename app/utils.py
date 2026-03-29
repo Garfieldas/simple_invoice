@@ -6,8 +6,9 @@ from num2words import num2words
 def amount_to_words_lt(amount: Decimal) -> str:
     """
     Convert a Decimal amount to words in Lithuanian currency format.
-    param amount: Decimal amount to convert
-    return: str amount in words
+
+    :param amount: Decimal amount to convert
+    :return: Amount in words as a string
     """
     amount = amount.quantize(Decimal("0.01"))
 

@@ -33,6 +33,10 @@ from app.forms import (
 from app.models import Client, Invoice, UserCompany, UserProfile
 from app.utils import amount_to_words_lt
 
+# Register DejaVu Sans – it supports Lithuanian diacritics (ą, č, ę, ė, į, š, ų, ū, ž)
+pdfmetrics.registerFont(TTFont('DejaVuSans', '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'))
+pdfmetrics.registerFont(TTFont('DejaVuSans-Bold', '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'))
+
 ITEMS_PER_PAGE = 10
 
 
@@ -189,22 +193,22 @@ def invoice_pdf(request, pk):
     )
 
     styles = getSampleStyleSheet()
-    style_normal = ParagraphStyle('LTNormal', parent=styles['Normal'], fontSize=9, leading=12)
-    style_bold = ParagraphStyle('LTBold', parent=style_normal, fontName='Helvetica-Bold')
+    style_normal = ParagraphStyle('LTNormal', parent=styles['Normal'], fontName='DejaVuSans', fontSize=9, leading=12)
+    style_bold = ParagraphStyle('LTBold', parent=style_normal, fontName='DejaVuSans-Bold')
     style_title = ParagraphStyle(
-        'LTTitle', parent=styles['Title'], fontSize=14, fontName='Helvetica-Bold',
+        'LTTitle', parent=styles['Title'], fontSize=14, fontName='DejaVuSans-Bold',
         alignment=1, spaceAfter=2 * mm,
     )
     style_small = ParagraphStyle('LTSmall', parent=style_normal, fontSize=8, leading=10)
     style_right = ParagraphStyle('LTRight', parent=style_normal, alignment=2)
     style_right_bold = ParagraphStyle(
-        'LTRightBold', parent=style_right, fontName='Helvetica-Bold',
+        'LTRightBold', parent=style_right, fontName='DejaVuSans-Bold',
     )
 
     elements = []
 
     # --- Title ---
-    elements.append(Paragraph("PVM SASKAITA FAKTURA", style_title))
+    elements.append(Paragraph("PVM SĄSKAITA FAKTŪRA", style_title))
     elements.append(
         Paragraph(
             f"Serija {invoice.series} Nr. {invoice.number:06d}",
@@ -216,9 +220,9 @@ def invoice_pdf(request, pk):
     # --- Dates ---
     date_data = [
         [
-            Paragraph("Israšymo data:", style_bold),
+            Paragraph("Išrašymo data:", style_bold),
             Paragraph(invoice.issue_date.strftime("%Y-%m-%d"), style_normal),
-            Paragraph("Apmoketi iki:", style_bold),
+            Paragraph("Apmokėti iki:", style_bold),
             Paragraph(invoice.due_date.strftime("%Y-%m-%d"), style_normal),
         ]
     ]
@@ -237,14 +241,14 @@ def invoice_pdf(request, pk):
     if company:
         seller_name = company.company_name
         if company.company_code:
-            seller_lines.append(f"Imones kodas: {company.company_code}")
+            seller_lines.append(f"Įmonės kodas: {company.company_code}")
         if company.vat_code:
             seller_lines.append(f"PVM kodas: {company.vat_code}")
         addr_parts = [p for p in [company.address, company.apartment_number, company.postal_code, company.city] if p]
         if addr_parts:
             seller_lines.append(f"Adresas: {', '.join(addr_parts)}")
         if company.bank_account:
-            seller_lines.append(f"Banko saskaita: {company.bank_account}")
+            seller_lines.append(f"Banko sąskaita: {company.bank_account}")
         if company.bank_name:
             seller_lines.append(f"Bankas: {company.bank_name}")
     else:
@@ -259,20 +263,20 @@ def invoice_pdf(request, pk):
             if profile.phone_number:
                 seller_lines.append(f"Tel.: {profile.phone_number}")
             if profile.bank_account:
-                seller_lines.append(f"Banko saskaita: {profile.bank_account}")
+                seller_lines.append(f"Banko sąskaita: {profile.bank_account}")
             if profile.bank_name:
                 seller_lines.append(f"Bankas: {profile.bank_name}")
 
     buyer_lines = []
     if client.company_code:
-        buyer_lines.append(f"Imones kodas: {client.company_code}")
+        buyer_lines.append(f"Įmonės kodas: {client.company_code}")
     if client.vat_code:
         buyer_lines.append(f"PVM kodas: {client.vat_code}")
     addr_parts = [p for p in [client.address, client.city] if p]
     if addr_parts:
         buyer_lines.append(f"Adresas: {', '.join(addr_parts)}")
     if client.email:
-        buyer_lines.append(f"El. pastas: {client.email}")
+        buyer_lines.append(f"El. paštas: {client.email}")
     if client.phone_number:
         buyer_lines.append(f"Tel.: {client.phone_number}")
 
@@ -280,7 +284,7 @@ def invoice_pdf(request, pk):
     buyer_text = f"<b>{client.name}</b><br/>" + "<br/>".join(buyer_lines)
 
     party_data = [
-        [Paragraph("<b>Pardavejas</b>", style_bold), Paragraph("<b>Pirkejas</b>", style_bold)],
+        [Paragraph("<b>Pardavėjas</b>", style_bold), Paragraph("<b>Pirkėjas</b>", style_bold)],
         [Paragraph(seller_text, style_small), Paragraph(buyer_text, style_small)],
     ]
     half = (A4[0] - 40 * mm) / 2
@@ -302,7 +306,7 @@ def invoice_pdf(request, pk):
     # --- Items table ---
     header = [
         Paragraph("<b>Nr.</b>", style_small),
-        Paragraph("<b>Aprasymas</b>", style_small),
+        Paragraph("<b>Aprašymas</b>", style_small),
         Paragraph("<b>Mato vnt.</b>", style_small),
         Paragraph("<b>Kiekis</b>", style_small),
         Paragraph("<b>Kaina</b>", style_small),
@@ -365,7 +369,7 @@ def invoice_pdf(request, pk):
 
     # --- Amount in words ---
     words = amount_to_words_lt(total)
-    elements.append(Paragraph(f"Suma zodžiais: <b>{words}</b>", style_normal))
+    elements.append(Paragraph(f"Suma žodžiais: <b>{words}</b>", style_normal))
 
     # --- Notes ---
     if invoice.notes:
@@ -376,14 +380,14 @@ def invoice_pdf(request, pk):
 
     # --- Signatures ---
     sig_data = [
-        [Paragraph("Saskaita israse:", style_small), Paragraph("Saskaita gavo:", style_small)],
+        [Paragraph("Sąskaitą išrašė:", style_small), Paragraph("Sąskaitą gavo:", style_small)],
         [
             Paragraph("____________________", style_small),
             Paragraph("____________________", style_small),
         ],
         [
-            Paragraph("(parasas, vardas, pavarde)", style_small),
-            Paragraph("(parasas, vardas, pavarde)", style_small),
+            Paragraph("(parašas, vardas, pavardė)", style_small),
+            Paragraph("(parašas, vardas, pavardė)", style_small),
         ],
     ]
     sig_table = Table(sig_data, colWidths=[half, half])
