@@ -145,7 +145,7 @@ class ClientForm(forms.ModelForm):
             'email', 'phone_number', 'address', 'city',
         )
         widgets = {
-            'client_type': Select2Widget,
+            'client_type': Select2Widget(),
         }
 
 
@@ -176,11 +176,11 @@ class InvoiceForm(forms.ModelForm):
             'issue_date', 'due_date', 'tax_enabled', 'tax_rate', 'notes',
         )
         widgets = {
-            'client': Select2Widget,
-            'status': Select2Widget,
+            'client': Select2Widget(),
+            'status': Select2Widget(),
             'issue_date': forms.DateInput(attrs={'type': 'date'}),
             'due_date': forms.DateInput(attrs={'type': 'date'}),
-            'tax_rate': Select2Widget,
+            'tax_rate': Select2Widget(),
             'notes': forms.Textarea(attrs={'rows': 3}),
         }
 
