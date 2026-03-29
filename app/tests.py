@@ -747,3 +747,40 @@ class Select2WidgetTests(ViewTestMixin, TestCase):
         self.assertIn('select2_min.css', content)
         self.assertIn('select2_min.js', content)
         self.assertIn('jquery_min.js', content)
+
+
+class FieldComponentTests(ViewTestMixin, TestCase):
+    """Field components apply Tailwind classes via template, not widget attrs."""
+
+    def test_forms_have_no_tailwind_class_in_widget_attrs(self):
+        from app.forms import ClientForm, InvoiceForm, UserCompanyForm, UserProfileForm
+        tailwind_fragment = 'rounded-lg border border-gray-300'
+        for FormClass in (ClientForm, InvoiceForm, UserCompanyForm, UserProfileForm):
+            form = FormClass()
+            for name, field in form.fields.items():
+                widget_class = field.widget.attrs.get('class', '')
+                self.assertNotIn(
+                    tailwind_fragment, widget_class,
+                    f'{FormClass.__name__}.{name} still has Tailwind class in widget attrs',
+                )
+
+    def test_client_form_fields_have_tailwind_class_in_html(self):
+        response = self.client.get(reverse('client_create'))
+        self.assertContains(response, 'rounded-lg border border-gray-300')
+
+    def test_invoice_form_fields_have_tailwind_class_in_html(self):
+        response = self.client.get(reverse('invoice_create'))
+        self.assertContains(response, 'rounded-lg border border-gray-300')
+
+    def test_checkbox_field_has_proper_styling(self):
+        response = self.client.get(reverse('invoice_create'))
+        content = response.content.decode()
+        self.assertIn('flex items-center gap-3', content)
+        self.assertIn('h-4 w-4', content)
+
+    def test_invoice_form_has_alpine_tax_toggle(self):
+        response = self.client.get(reverse('invoice_create'))
+        content = response.content.decode()
+        self.assertIn('x-data', content)
+        self.assertIn('taxEnabled', content)
+        self.assertIn('x-show="taxEnabled"', content)
