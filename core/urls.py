@@ -33,6 +33,7 @@ from app.views import (
     invoice_edit,
     invoice_list,
     profile_edit,
+    create_invoice_pdf,
 )
 
 urlpatterns = [
@@ -56,6 +57,7 @@ urlpatterns = [
     path('companies/<int:pk>/delete/', company_delete, name='company_delete'),
     # Profile
     path('profile/', profile_edit, name='profile_edit'),
+    path('invoices/<str:invoice_pk>/pdf/', create_invoice_pdf, name='create_invoice_pdf'),
     path('', include('app.urls')),
 ]
 

@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="lt">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Sąskaita Faktūra</title>
+
+<style>
+  @page { size: A4; margin: 24mm; }
+
+  html, body {
+    height: 100%;
+    margin: 0;
+    font-family: Inter, Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    color: #111827;
+  }
+
+  .wrap {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 30px 20px;
+    box-sizing: border-box;
+  }
+
+
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+  }
+
+  .title {
+    text-align: center;
+    flex: 1;
+  }
+
+  .title h1 {
+    font-size: 24px;
+    margin: 0;
+    font-weight: 800;
+    letter-spacing: 1px;
+    white-space: nowrap;
+  }
+
+  .series {
+    margin-top: 6px;
+    font-weight: 600;
+  }
+
+  .meta {
+    width: 220px;
+    text-align: right;
+    font-size: 13px;
+    margin-top: 100px;
+  }
+
+  .meta div {
+    margin-bottom: 6px;
+  }
+
+
+  .contacts {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+  }
+
+  .party {
+    width: 48%;
+  }
+
+  .party h3 {
+    margin: 0 0 8px;
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  .small {
+    font-size: 13px;
+    line-height: 2.1;
+  }
+
+  .row-hr {
+    border-top: 1px solid #e5e7eb;
+    margin: 24px 0;
+  }
+
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  thead th {
+    padding: 10px 6px;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+    font-weight: 600;
+  }
+
+  tbody td {
+    padding: 12px 6px;
+    border-bottom: 1px solid #f3f4f6;
+  }
+
+  .qty, .unit, .price, .sum {
+    width: 80px;
+    text-align: right;
+  }
+
+
+  .totals {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 16px;
+  }
+
+  .totals table {
+    width: 300px;
+  }
+
+  .right {
+    text-align: right;
+  }
+
+  .muted {
+    font-size: 13px;
+    opacity: 0.8;
+  }
+
+
+  .signature {
+    margin-top: 32px;
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .signature-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+.sig-line {
+  white-space: nowrap;
+  font-size: 13px;
+}
+
+  footer {
+    position: fixed;
+    bottom: 18mm;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 11px;
+    opacity: 0.6;
+  }
+</style>
+</head>
+
+<body>
+<div class="wrap">
+
+
+  <header>
+    <div style="width:200px"></div>
+
+    <div class="title">
+      <h1>SĄSKAITA FAKTŪRA</h1>
+      <div class="series">Serija AA Nr. <strong>{{ invoice.invoice_number_display }}</strong></div>
+    </div>
+
+    <div class="meta">
+      <div><strong>Data:</strong> {{ invoice.created_at|date:"Y-m-d" }}</div>
+      <div><strong>Apmokėti iki:</strong> {{ invoice.due_date|date:"Y-m-d" }}</div>
+    </div>
+  </header>
+
+
+  <div class="contacts">
+    <div class="party">
+      <h3>PARDAVĖJAS</h3>
+      <div class="small">
+        <strong>{{ user.full_name }}</strong><br>
+        Veiklos pažymos kodas: {{ individual_code }}<br>
+        {{ self_info.address }}<br>
+        Tel. {{ self_info.phone_number }}<br>
+        El. paštas: {{ user.email }}<br>
+        A.s. {{ self_info.bank_name }} {{ self_info.iban }}
+      </div>
+    </div>
+
+    <div class="party" style="text-align:right">
+      <h3>PIRKĖJAS</h3>
+      <div class="small">
+        <strong>{{ customer.company_name }}</strong><br>
+        Įmonės kodas: {{ customer.company_code }}<br>
+        PVM mokėtojo kodas: {{ customer.vat_code }}<br>
+        {{ customer.address }}<br>
+        {{ customer.full_name }}<br>
+        Tel. {{ customer.phone_number }}
+      </div>
+    </div>
+  </div>
+
+  <div class="row-hr"></div>
+
+
+  <table>
+    <thead>
+      <tr>
+        <th>Prekių / paslaugų pavadinimas</th>
+        <th class="qty">Kiekis</th>
+        <th class="unit">Vnt.</th>
+        <th class="price">Kaina</th>
+        <th class="sum">Suma</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in invoice_items %}
+      <tr>
+        <td>{{ item.name }}</td>
+        <td class="qty">{{ item.amount }}</td>
+        <td class="unit">{{ item.get_unit_display }}</td>
+        <td class="price">{{ item.price }} €</td>
+        <td class="sum">{{ item.total_price }} €</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div class="muted" style="margin-top:10px">
+    Bendra suma žodžiais: {{ amount_words }}
+  </div>
+
+
+  <div class="totals">
+    <table>
+      <tr>
+        <td class="muted">Bendra suma:</td>
+        <td class="right"><strong>{{ invoice.total_price }} €</strong></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="signature">
+    <div class="signature-box">
+      <span class="muted">Išrašė</span>
+      <div class="sig-line">{{ user.full_name }}</div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

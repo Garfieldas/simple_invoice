@@ -1,9 +1,15 @@
+from decimal import Decimal
+from typing import Optional
+
 from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.template.loader import render_to_string
+from weasyprint import HTML
+from num2words import num2words
 
 import json
 
@@ -318,3 +324,50 @@ def profile_edit(request):
     if _is_htmx(request):
         return render(request, 'crud/profile_form_partial.html', context)
     return render(request, 'crud/profile_form.html', context)
+
+
+
+def amount_to_words_lt(amount: Decimal) -> str:
+    """
+    Convert a Decimal amount to words in Lithuanian currency format.
+    param amount: Decimal amount to convert
+    return: str amount in words
+    """
+    amount = amount.quantize(Decimal("0.01"))
+
+    euros = int(amount)
+    cents = int((amount - euros) * 100)
+
+    euros_words = num2words(euros, lang="lt")
+
+    return (
+        f"{euros_words.capitalize()} eur ir {str(cents).zfill(2)} ct"
+    )
+
+
+
+@login_required
+def create_invoice_pdf(request, invoice_pk:str):
+    try:
+        user: User = request.user # type: ignore
+        invoice:Invoice = Invoice.objects.select_related('client').get(pk=invoice_pk)
+        invoice_items = invoice.items.all()
+        self_info = UserProfile.objects.get(user=user)
+        customer = invoice.client
+    except Exception as e:
+        print(e)
+        pass
+    amount_words = amount_to_words_lt(invoice.total)
+    context: dict = {
+        "user": user,
+        "invoice": invoice,
+        "customer": customer,
+        "self_info": self_info,
+        "invoice_items": invoice_items,
+        "amount_words": amount_words
+    }
+    html_to_string = render_to_string("invoice_to_pdf.html", context)
+    pdf = HTML(string=html_to_string).write_pdf()
+    response = HttpResponse(pdf, content_type="application/pdf")
+    response["Content-Disposition"] = f'inline; filename="invoice-{invoice.invoice_number}.pdf"'
+    return response
