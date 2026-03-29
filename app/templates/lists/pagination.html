@@ -1,0 +1,58 @@
+{% if page_obj.has_other_pages %}
+<nav class="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6 rounded-b-lg" aria-label="Pagination">
+    <div class="hidden sm:block">
+        <p class="text-sm text-gray-700">
+            Showing
+            <span class="font-medium">{{ page_obj.start_index }}</span>
+            to
+            <span class="font-medium">{{ page_obj.end_index }}</span>
+            of
+            <span class="font-medium">{{ page_obj.paginator.count }}</span>
+            results
+        </p>
+    </div>
+    <div class="flex flex-1 justify-between sm:justify-end space-x-2">
+        {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}"
+           hx-get="?page={{ page_obj.previous_page_number }}"
+           hx-target="#main-content"
+           hx-swap="innerHTML"
+           hx-push-url="true"
+           class="relative inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+            Previous
+        </a>
+        {% endif %}
+
+        <!-- Page numbers -->
+        <div class="hidden sm:flex space-x-1">
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <span class="relative inline-flex items-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white">
+                    {{ num }}
+                </span>
+                {% elif num > page_obj.number|add:"-3" and num < page_obj.number|add:"3" %}
+                <a href="?page={{ num }}"
+                   hx-get="?page={{ num }}"
+                   hx-target="#main-content"
+                   hx-swap="innerHTML"
+                   hx-push-url="true"
+                   class="relative inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                    {{ num }}
+                </a>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}"
+           hx-get="?page={{ page_obj.next_page_number }}"
+           hx-target="#main-content"
+           hx-swap="innerHTML"
+           hx-push-url="true"
+           class="relative inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+            Next
+        </a>
+        {% endif %}
+    </div>
+</nav>
+{% endif %}

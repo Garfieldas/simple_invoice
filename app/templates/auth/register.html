@@ -1,0 +1,40 @@
+{% extends 'auth/base_auth.html' %}
+{% load form_tags %}
+
+{% block title %}Create Account — Invoice App{% endblock %}
+{% block subtitle %}Create a new account{% endblock %}
+
+{% block content %}
+<form method="post" class="space-y-5" novalidate>
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+    <div class="rounded-lg bg-red-50 border border-red-200 p-3 text-sm text-red-800">
+        {% for error in form.non_field_errors %}
+        <p>{{ error }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% include "fields/text_input.html" with field=form.email %}
+
+    <div class="grid grid-cols-2 gap-4">
+        {% include "fields/text_input.html" with field=form.first_name %}
+        {% include "fields/text_input.html" with field=form.last_name %}
+    </div>
+
+    {% include "fields/text_input.html" with field=form.password1 %}
+    {% include "fields/text_input.html" with field=form.password2 %}
+
+    <button type="submit" class="flex w-full justify-center rounded-lg bg-red-600 px-3 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors">
+        Create account
+    </button>
+</form>
+{% endblock %}
+
+{% block footer_links %}
+<p class="text-center text-sm text-gray-500">
+    Already have an account?
+    <a href="{% url 'login' %}" class="font-semibold text-red-600 hover:text-red-500">Sign in</a>
+</p>
+{% endblock %}

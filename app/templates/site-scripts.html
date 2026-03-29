@@ -1,0 +1,64 @@
+{% if messages %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    {% for message in messages %}
+    Swal.fire({
+        {% if message.tags == 'success' %}
+        icon: 'success',
+        title: 'Success',
+        {% elif message.tags == 'error' %}
+        icon: 'error',
+        title: 'Error',
+        {% elif message.tags == 'warning' %}
+        icon: 'warning',
+        title: 'Warning',
+        {% elif message.tags == 'info' %}
+        icon: 'info',
+        title: 'Info',
+        {% else %}
+        icon: 'info',
+        title: 'Notice',
+        {% endif %}
+        text: '{{ message|escapejs }}',
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+    });
+    {% endfor %}
+});
+</script>
+{% endif %}
+<script>
+document.addEventListener('htmx:confirm', function(e) {
+    if (!e.detail.question) return;
+    e.preventDefault();
+    Swal.fire({
+        title: 'Are you sure?',
+        text: e.detail.question,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc2626',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'Yes, delete it!',
+    }).then(function(result) {
+        if (result.isConfirmed) {
+            e.detail.issueRequest(true);
+        }
+    });
+});
+
+document.body.addEventListener('showMessage', function(e) {
+    Swal.fire({
+        icon: 'success',
+        title: 'Deleted!',
+        text: e.detail.value || 'Item deleted successfully.',
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+    });
+});
+</script>
