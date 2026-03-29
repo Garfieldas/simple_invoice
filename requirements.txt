@@ -5,3 +5,5 @@ psycopg2-binary
 python-dotenv
 django-tailwind
 django-tailwind[reload]
+reportlab
+num2words

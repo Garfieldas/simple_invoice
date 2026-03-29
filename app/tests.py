@@ -784,3 +784,114 @@ class FieldComponentTests(ViewTestMixin, TestCase):
         self.assertIn('x-data', content)
         self.assertIn('taxEnabled', content)
         self.assertIn('x-show="taxEnabled"', content)
+
+
+# ---------------------------------------------------------------------------
+# PDF Tests
+# ---------------------------------------------------------------------------
+
+class InvoicePdfTests(ViewTestMixin, TestCase):
+
+    def test_invoice_pdf_returns_pdf(self):
+        response = self.client.get(reverse('invoice_pdf', args=[self.invoice.pk]))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response['Content-Type'], 'application/pdf')
+
+    def test_invoice_pdf_download_flag(self):
+        response = self.client.get(
+            reverse('invoice_pdf', args=[self.invoice.pk]), {'download': '1'}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('attachment', response.get('Content-Disposition', ''))
+
+    def test_invoice_pdf_inline_without_download_flag(self):
+        response = self.client.get(reverse('invoice_pdf', args=[self.invoice.pk]))
+        self.assertEqual(response.status_code, 200)
+        disposition = response.get('Content-Disposition', '')
+        self.assertNotIn('attachment', disposition)
+
+    def test_invoice_pdf_requires_login(self):
+        self.client.logout()
+        response = self.client.get(reverse('invoice_pdf', args=[self.invoice.pk]))
+        self.assertEqual(response.status_code, 302)
+
+    def test_invoice_pdf_other_user_forbidden(self):
+        other_user = User.objects.create_user(
+            email='other@example.com', password='testpass123'
+        )
+        self.client.force_login(other_user)
+        response = self.client.get(reverse('invoice_pdf', args=[self.invoice.pk]))
+        self.assertEqual(response.status_code, 404)
+
+    def test_invoice_pdf_nonexistent_invoice(self):
+        response = self.client.get(reverse('invoice_pdf', args=[99999]))
+        self.assertEqual(response.status_code, 404)
+
+    def test_invoice_pdf_starts_with_pdf_header(self):
+        response = self.client.get(reverse('invoice_pdf', args=[self.invoice.pk]))
+        content = b''.join(response.streaming_content)
+        self.assertTrue(content.startswith(b'%PDF'))
+
+    def test_invoice_pdf_with_tax_disabled(self):
+        self.invoice.tax_enabled = False
+        self.invoice.save()
+        response = self.client.get(reverse('invoice_pdf', args=[self.invoice.pk]))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response['Content-Type'], 'application/pdf')
+
+    def test_invoice_pdf_with_company_seller(self):
+        """PDF renders when user has a company (business seller)."""
+        response = self.client.get(reverse('invoice_pdf', args=[self.invoice.pk]))
+        self.assertEqual(response.status_code, 200)
+        content = b''.join(response.streaming_content)
+        self.assertTrue(content.startswith(b'%PDF'))
+
+    def test_invoice_pdf_without_company_uses_profile(self):
+        """PDF renders when user has only profile (individual seller)."""
+        UserCompany.objects.filter(user=self.user).delete()
+        from app.models import UserProfile
+        UserProfile.objects.get_or_create(
+            user=self.user,
+            defaults={'phone_number': '+370600000', 'city': 'Vilnius'},
+        )
+        response = self.client.get(reverse('invoice_pdf', args=[self.invoice.pk]))
+        self.assertEqual(response.status_code, 200)
+        content = b''.join(response.streaming_content)
+        self.assertTrue(content.startswith(b'%PDF'))
+
+    def test_invoice_list_has_pdf_link(self):
+        response = self.client.get(reverse('invoice_list'))
+        self.assertContains(response, reverse('invoice_pdf', args=[self.invoice.pk]))
+
+
+class AmountToWordsTests(TestCase):
+
+    def test_basic_amount(self):
+        from app.utils import amount_to_words_lt
+        result = amount_to_words_lt(Decimal('100.00'))
+        self.assertIn('eur', result)
+        self.assertIn('00 ct', result)
+
+    def test_amount_with_cents(self):
+        from app.utils import amount_to_words_lt
+        result = amount_to_words_lt(Decimal('21.50'))
+        self.assertIn('eur', result)
+        self.assertIn('50 ct', result)
+
+    def test_zero_amount(self):
+        from app.utils import amount_to_words_lt
+        result = amount_to_words_lt(Decimal('0.00'))
+        self.assertIn('eur', result)
+        self.assertIn('00 ct', result)
+
+    def test_large_amount(self):
+        from app.utils import amount_to_words_lt
+        result = amount_to_words_lt(Decimal('1234.56'))
+        self.assertIn('eur', result)
+        self.assertIn('56 ct', result)
+
+    def test_starts_with_capital(self):
+        from app.utils import amount_to_words_lt
+        result = amount_to_words_lt(Decimal('5.00'))
+        self.assertTrue(result[0].isupper())
+
