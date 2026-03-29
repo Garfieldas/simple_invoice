@@ -170,11 +170,11 @@
 
     <div class="title">
       <h1>SĄSKAITA FAKTŪRA</h1>
-      <div class="series">Serija AA Nr. <strong>{{ invoice.invoice_number_display }}</strong></div>
+      <div class="series">Serija {{ invoice.series }} Nr. <strong>{{ invoice.number|stringformat:"06d" }}</strong></div>
     </div>
 
     <div class="meta">
-      <div><strong>Data:</strong> {{ invoice.created_at|date:"Y-m-d" }}</div>
+      <div><strong>Data:</strong> {{ invoice.issue_date|date:"Y-m-d" }}</div>
       <div><strong>Apmokėti iki:</strong> {{ invoice.due_date|date:"Y-m-d" }}</div>
     </div>
   </header>
@@ -185,22 +185,21 @@
       <h3>PARDAVĖJAS</h3>
       <div class="small">
         <strong>{{ user.full_name }}</strong><br>
-        Veiklos pažymos kodas: {{ individual_code }}<br>
+        Veiklos pažymos kodas: {{ self_info.personal_code }}<br>
         {{ self_info.address }}<br>
         Tel. {{ self_info.phone_number }}<br>
         El. paštas: {{ user.email }}<br>
-        A.s. {{ self_info.bank_name }} {{ self_info.iban }}
+        A.s. {{ self_info.bank_name }} {{ self_info.bank_account }}
       </div>
     </div>
 
     <div class="party" style="text-align:right">
       <h3>PIRKĖJAS</h3>
       <div class="small">
-        <strong>{{ customer.company_name }}</strong><br>
+        <strong>{{ customer.name }}</strong><br>
         Įmonės kodas: {{ customer.company_code }}<br>
         PVM mokėtojo kodas: {{ customer.vat_code }}<br>
         {{ customer.address }}<br>
-        {{ customer.full_name }}<br>
         Tel. {{ customer.phone_number }}
       </div>
     </div>
@@ -222,11 +221,11 @@
     <tbody>
       {% for item in invoice_items %}
       <tr>
-        <td>{{ item.name }}</td>
-        <td class="qty">{{ item.amount }}</td>
-        <td class="unit">{{ item.get_unit_display }}</td>
-        <td class="price">{{ item.price }} €</td>
-        <td class="sum">{{ item.total_price }} €</td>
+        <td>{{ item.description }}</td>
+        <td class="qty">{{ item.quantity }}</td>
+        <td class="unit">{{ item.unit }}</td>
+        <td class="price">{{ item.unit_price }} €</td>
+        <td class="sum">{{ item.line_total|floatformat:2 }} €</td>
       </tr>
       {% endfor %}
     </tbody>
@@ -241,7 +240,7 @@
     <table>
       <tr>
         <td class="muted">Bendra suma:</td>
-        <td class="right"><strong>{{ invoice.total_price }} €</strong></td>
+        <td class="right"><strong>{{ invoice.total|floatformat:2 }} €</strong></td>
       </tr>
     </table>
   </div>
