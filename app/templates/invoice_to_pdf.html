@@ -225,7 +225,7 @@
         <td class="qty">{{ item.quantity }}</td>
         <td class="unit">{{ item.unit }}</td>
         <td class="price">{{ item.unit_price }} €</td>
-        <td class="sum">{{ item.line_total }} €</td>
+        <td class="sum">{{ item.line_total|floatformat:2 }} €</td>
       </tr>
       {% endfor %}
     </tbody>
@@ -240,7 +240,7 @@
     <table>
       <tr>
         <td class="muted">Bendra suma:</td>
-        <td class="right"><strong>{{ invoice.total }} €</strong></td>
+        <td class="right"><strong>{{ invoice.total|floatformat:2 }} €</strong></td>
       </tr>
     </table>
   </div>
