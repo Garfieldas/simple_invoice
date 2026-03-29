@@ -5,6 +5,8 @@ from django.contrib.auth.forms import (
     PasswordResetForm,
     SetPasswordForm,
 )
+from django.utils import timezone
+from datetime import timedelta
 from django.forms import inlineformset_factory
 from django_select2.forms import Select2Widget
 
@@ -187,6 +189,8 @@ class InvoiceForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['tax_enabled'].initial = False
+        self.fields['issue_date'].initial = timezone.localdate()
+        self.fields['due_date'].initial = timezone.localdate() + timedelta(days=15)
 
 
 
