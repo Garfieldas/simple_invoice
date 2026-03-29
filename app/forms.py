@@ -237,6 +237,10 @@ class InvoiceForm(forms.ModelForm):
             ),
         }
 
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.fields['tax_enabled'].initial = False
+
 
 class InvoiceItemForm(forms.ModelForm):
     class Meta:
