@@ -96,6 +96,10 @@
                                 hx-swap="outerHTML swap:0.5s"
                                 hx-confirm="You are about to delete this invoice. This action cannot be undone."
                                 class="text-gray-400 hover:text-red-600">Delete</button>
+                        <a href="{% url 'create_invoice_pdf' invoice.pk %}"
+                                hx-target="_blank"
+                                hx-swap="none"
+                                class="text-gray-400 hover:text-gray-600">PDF</a>
                     </td>
                 </tr>
                 {% empty %}
