@@ -184,6 +184,11 @@ class InvoiceForm(forms.ModelForm):
             'notes': forms.Textarea(attrs={'rows': 3}),
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['tax_enabled'].initial = False
+
+
 
 class InvoiceItemForm(forms.ModelForm):
     class Meta:
