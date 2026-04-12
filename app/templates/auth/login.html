@@ -1,10 +1,33 @@
 {% extends 'auth/base_auth.html' %}
-{% load form_tags %}
+{% load static form_tags %}
 
 {% block title %}Sign In — Invoice App{% endblock %}
 {% block subtitle %}Sign in to your account{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/cat_animation.css' %}">
+{% endblock %}
+
 {% block content %}
+<div class="cat-container" aria-hidden="true">
+    <div class="cat">
+        <div class="cat-figure">
+            <div class="cat-ear-left"></div>
+            <div class="cat-ear-right"></div>
+            <div class="cat-head"></div>
+            <div class="cat-eye-left"></div>
+            <div class="cat-eye-right"></div>
+            <div class="cat-nose"></div>
+            <div class="cat-body"></div>
+            <div class="cat-tail"></div>
+            <div class="cat-leg cat-leg-fl"></div>
+            <div class="cat-leg cat-leg-fr"></div>
+            <div class="cat-leg cat-leg-bl"></div>
+            <div class="cat-leg cat-leg-br"></div>
+        </div>
+    </div>
+</div>
+
 <form method="post" class="space-y-5" novalidate>
     {% csrf_token %}
 
