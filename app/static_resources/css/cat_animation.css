@@ -160,30 +160,25 @@
 
 .cat-leg-fl {
     left: 14px;
-    animation: leg-front 0.4s ease-in-out infinite alternate;
+    animation: leg-walk 0.4s ease-in-out infinite alternate;
 }
 
 .cat-leg-fr {
     left: 22px;
-    animation: leg-front 0.4s ease-in-out infinite alternate-reverse;
+    animation: leg-walk 0.4s ease-in-out infinite alternate-reverse;
 }
 
 .cat-leg-bl {
     left: 36px;
-    animation: leg-back 0.4s ease-in-out infinite alternate-reverse;
+    animation: leg-walk 0.4s ease-in-out infinite alternate-reverse;
 }
 
 .cat-leg-br {
     left: 44px;
-    animation: leg-back 0.4s ease-in-out infinite alternate;
+    animation: leg-walk 0.4s ease-in-out infinite alternate;
 }
 
-@keyframes leg-front {
-    0%   { transform: rotate(15deg); }
-    100% { transform: rotate(-15deg); }
-}
-
-@keyframes leg-back {
+@keyframes leg-walk {
     0%   { transform: rotate(15deg); }
     100% { transform: rotate(-15deg); }
 }
