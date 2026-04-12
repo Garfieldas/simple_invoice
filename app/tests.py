@@ -262,6 +262,12 @@ class LoginViewTests(DjangoTestCase):
         response = self.client.get(url_reverse('login'))
         self.assertRedirects(response, url_reverse('dashboard'))
 
+    def test_login_page_has_cat_animation(self):
+        response = self.client.get(url_reverse('login'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'cat-container')
+        self.assertContains(response, 'cat_animation.css')
+
 
 @override_settings(
     DATABASES={'default': {'ENGINE': 'django.db.backends.sqlite3', 'NAME': ':memory:'}},
